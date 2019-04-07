@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7ac8dac37ed254449d15e565a2255c5, type: 3}
+  m_Name: Global Train Settings
+  m_EditorClassIdentifier: 
+  rotationSpeed: 2
+  moveSpeed: 10
+  curveRecoverTime: 0.2
+  curveMultiple: 20
+  bufferSize: 5000
+  TrainDeathEffect: {fileID: 1714008875702981675, guid: 191409d183aa41d48baf4539f09edbed,
+    type: 3}
+  WagonDeathEffect: {fileID: 3863390978334791965, guid: 172960b4ab0b7b548b4fa73650d4aa8f,
+    type: 3}
+  WagonAddEffect: {fileID: 3863390978334791965, guid: 172960b4ab0b7b548b4fa73650d4aa8f,
+    type: 3}

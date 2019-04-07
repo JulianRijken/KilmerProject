@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa3f0a74c63cbbf45912c34386f86ddb, type: 3}
+  m_Name: TrainPref_p4
+  m_EditorClassIdentifier: 
+  global: {fileID: 11400000, guid: 753e1b0b7a619474580cc5a93ac5a6b2, type: 2}
+  wagonPrefab: {fileID: 2674249138185371044, guid: b727de3fbfd070d418cb55c3bff60bd2,
+    type: 3}
+  playerId: 3
+  leftKey: 260
+  rightKey: 262

@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: debdd5493a69c3f4488e2eba52963893
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Graduate
+  fontNames:
+  - Graduate
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: dd479729cd45fff40a2f4aab231b3b9c, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 009d325b5a1e8ff43ba4e1ad06c9b249, type: 3}
+  m_Name: VehiclePrefabs
+  m_EditorClassIdentifier: 
+  trainPrefabs:
+  - playerId: 0
+    prefab: {fileID: 3677757260498544173, guid: 4c23ab814000f0744b49f6f859a406a8,
+      type: 3}
+  - playerId: 1
+    prefab: {fileID: 3677757260498544173, guid: f2e0de20768e2f94bb0471bdc218f779,
+      type: 3}
+  - playerId: 2
+    prefab: {fileID: 3677757260498544173, guid: df8cb30d1a78ea4419cc1cb2592d6d83,
+      type: 3}
+  - playerId: 3
+    prefab: {fileID: 3677757260498544173, guid: fab0874c7aab4694f865e2d90efe99f1,
+      type: 3}
+  busPrefabs:
+  - playerId: 0
+    prefab: {fileID: 2252909298361004606, guid: 7d2ad527c376dcf4f8688845a8f5f33e,
+      type: 3}
+  - playerId: 1
+    prefab: {fileID: 2252909298361004606, guid: 8f6190399a9589a4282b318c9ffa02b2,
+      type: 3}
+  - playerId: 2
+    prefab: {fileID: 2252909298361004606, guid: 536877c9879e07342a725184a1abf0b8,
+      type: 3}
+  - playerId: 3
+    prefab: {fileID: 2252909298361004606, guid: e10161c1a8842bd43b7f880cf652a8fa,
+      type: 3}
