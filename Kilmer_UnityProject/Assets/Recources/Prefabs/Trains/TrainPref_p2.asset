@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TrainPref_p2
   m_EditorClassIdentifier: 
   global: {fileID: 11400000, guid: 753e1b0b7a619474580cc5a93ac5a6b2, type: 2}
-  wagonPrefab: {fileID: 2674249138185371044, guid: b727de3fbfd070d418cb55c3bff60bd2,
+  wagonPrefab: {fileID: 5727818329684733054, guid: f3d4ab2144141914da0a470cce47bca7,
     type: 3}
   playerId: 1
   leftKey: 104

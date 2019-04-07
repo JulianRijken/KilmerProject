@@ -17,6 +17,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI winScreenText = null;
     [SerializeField] CanvasGroup winScreenCanvasGroup = null;
     [SerializeField] GameObject winScreenGroup = null;
+    [SerializeField] private float cheatTimeMakeZero;
 
     [SerializeField] private Color overtimeColor;
 
@@ -27,6 +28,7 @@ public class GameUI : MonoBehaviour
 
     private int playerCount;
     private float gameTimeLeft;
+
 
     private void Start()
     {
@@ -39,6 +41,8 @@ public class GameUI : MonoBehaviour
 
         winScreenCanvasGroup.alpha = 0;
         winScreenGroup.SetActive(false);
+
+        cheatTimeMakeZero = 0;
     }
 
     public void Update()
@@ -169,7 +173,7 @@ public class GameUI : MonoBehaviour
     public void StartGameUI(int _playerCount, int gameTime)
     {
         playerCount = _playerCount;
-        gameTimeLeft = gameTime - 290;
+        gameTimeLeft = gameTime - cheatTimeMakeZero;
 
         for (int i = 0; i < playerCount; i++)
         {

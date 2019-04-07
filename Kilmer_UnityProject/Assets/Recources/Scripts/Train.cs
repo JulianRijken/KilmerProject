@@ -15,7 +15,7 @@ public class Train : MonoBehaviour
 
     [HideInInspector] public List<Wagon> wagons = new List<Wagon>();
     private List<BufferTransform> bufferTransforms = new List<BufferTransform>();
-    private int totalWagonDistance = 0;
+    private int totalWagonDistance;
 
     private float lifeTime;
 
@@ -29,7 +29,7 @@ public class Train : MonoBehaviour
 
         gameObject.layer = 15;
         lifeTime = 0;
-
+        totalWagonDistance = -5;
 
     }
 
