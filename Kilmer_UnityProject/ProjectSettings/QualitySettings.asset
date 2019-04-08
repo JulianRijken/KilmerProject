@@ -8,7 +8,7 @@ QualitySettings:
   m_QualitySettings:
   - serializedVersion: 2
     name: Low
-    pixelLightCount: 0
+    pixelLightCount: 4
     shadows: 0
     shadowResolution: 0
     shadowProjection: 1
@@ -83,7 +83,7 @@ QualitySettings:
     shadowResolution: 3
     shadowProjection: 0
     shadowCascades: 1
-    shadowDistance: 80
+    shadowDistance: 100
     shadowNearPlaneOffset: 3
     shadowCascade2Split: 0.33333334
     shadowCascade4Split: {x: 0.7550388, y: 0.8534877, z: 0.924806}
