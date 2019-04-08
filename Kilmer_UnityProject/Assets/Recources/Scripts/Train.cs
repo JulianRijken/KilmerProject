@@ -137,6 +137,13 @@ public class Train : MonoBehaviour
     /// </summary>
     void OnHitObstacal()
     {
+        if(gettingRemoved == false)
+            StartCoroutine(KillTrain());
+
+    }
+
+    IEnumerator KillTrain()
+    {
         gameManager.RemoveCinemachineTargetGroupTarget(transform);
 
         // Sapwn new train
@@ -148,12 +155,11 @@ public class Train : MonoBehaviour
             Destroy(wagons[i].gameObject);
         }
 
+        yield return new WaitForSeconds(1);
+
         Instantiate(settings.global.TrainDeathEffect, transform.position, transform.rotation);
         Destroy(gameObject);
-
     }
-
-    //IEnumerator
 
     /// <summary>
     /// Makes a new train spawn and makes the current train slowly die
