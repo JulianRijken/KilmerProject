@@ -18,12 +18,14 @@ public class Train : MonoBehaviour
     private int totalWagonDistance;
 
     private float lifeTime;
+    private bool gettingRemoved;
 
     void Start()
     {
         rig = GetComponent<Rigidbody>();
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         spawning = true;
+        gettingRemoved = false;
 
         //AddWagon(test);
 
@@ -150,6 +152,8 @@ public class Train : MonoBehaviour
         Destroy(gameObject);
 
     }
+
+    //IEnumerator
 
     /// <summary>
     /// Makes a new train spawn and makes the current train slowly die
