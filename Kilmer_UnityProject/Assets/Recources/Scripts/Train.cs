@@ -65,10 +65,15 @@ public class Train : MonoBehaviour
 
     private void AddToBufferList()
     {
-        while (bufferTransforms.Count <= settings.global.bufferSize)
+
+        if (gettingRemoved == false)
         {
-            bufferTransforms.Add(new BufferTransform(transform.position, transform.GetChild(0).rotation));
+            while (bufferTransforms.Count <= settings.global.bufferSize)
+            {
+                bufferTransforms.Add(new BufferTransform(transform.position, transform.GetChild(0).rotation));
+            }
         }
+
         while (bufferTransforms.Count > settings.global.bufferSize)
         {
             bufferTransforms.RemoveAt(0);
@@ -81,8 +86,11 @@ public class Train : MonoBehaviour
 
         for (int i = 0; i < wagons.Count; i++)
         {
-            wagons[i].transform.position = bufferTransforms[globalBufferSize - wagons[i].distance].position;
-            wagons[i].transform.rotation = bufferTransforms[globalBufferSize - wagons[i].distance].rotation;
+            if (wagons[i] != null)
+            {
+                wagons[i].transform.position = bufferTransforms[globalBufferSize - wagons[i].distance].position;
+                wagons[i].transform.rotation = bufferTransforms[globalBufferSize - wagons[i].distance].rotation;
+            }
         }
     }
 
@@ -107,19 +115,20 @@ public class Train : MonoBehaviour
 
     void Rotate()
     {
-        if (gameManager.GetGameState().Equals(GameState.Playing))
+        if (gettingRemoved == false)
         {
-            // Curve
+            if (gameManager.GetGameState().Equals(GameState.Playing))
+            {
+                // Curve
 
-            float zRot = GetKeyInput() * settings.global.curveMultiple;
-            Quaternion toRot = Quaternion.Euler(new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRot));
+                float zRot = GetKeyInput() * settings.global.curveMultiple;
+                Quaternion toRot = Quaternion.Euler(new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRot));
 
+                transform.GetChild(0).transform.rotation = Quaternion.Slerp(transform.GetChild(0).transform.rotation, toRot, Time.deltaTime / settings.global.curveRecoverTime);
 
-            transform.GetChild(0).transform.rotation = Quaternion.Slerp(transform.GetChild(0).transform.rotation,toRot,Time.deltaTime / settings.global.curveRecoverTime);
-
-
-            // Rotate y
-            transform.Rotate(0, GetKeyInput() * settings.global.rotationSpeed * Time.deltaTime * 100, 0);
+                // Rotate y
+                transform.Rotate(0, GetKeyInput() * settings.global.rotationSpeed * Time.deltaTime * 100, 0);
+            }
         }
     }
 
@@ -144,20 +153,27 @@ public class Train : MonoBehaviour
 
     IEnumerator KillTrain()
     {
-        gameManager.RemoveCinemachineTargetGroupTarget(transform);
+        gettingRemoved = true;
 
-        // Sapwn new train
-        gameManager.SpawnTrain(settings.playerId, 5);
+        Instantiate(settings.global.TrainDeathEffect, transform.position, transform.rotation);
+
+        GetComponent<BoxCollider>().enabled = false;
+        Destroy(transform.GetChild(0).gameObject);
+
 
         for (int i = 0; i < wagons.Count; i++)
         {
+            yield return new WaitForSeconds(0.03f);
+
             Instantiate(settings.global.WagonDeathEffect, wagons[i].transform.position, wagons[i].transform.rotation);
             Destroy(wagons[i].gameObject);
         }
 
-        yield return new WaitForSeconds(1);
 
-        Instantiate(settings.global.TrainDeathEffect, transform.position, transform.rotation);
+        gameManager.RemoveCinemachineTargetGroupTarget(transform);
+
+        gameManager.SpawnTrain(settings.playerId, 5);
+
         Destroy(gameObject);
     }
 
