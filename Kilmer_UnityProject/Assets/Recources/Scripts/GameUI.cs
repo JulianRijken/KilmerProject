@@ -29,9 +29,16 @@ public class GameUI : MonoBehaviour
     private int playerCount;
     private float gameTimeLeft;
 
+    [SerializeField]  private Transform lightTransform;
+    [SerializeField] private Vector3 toLightRot;
+    private float gameStartTime;
+    private Vector3 fromLightRot;
 
     private void Start()
     {
+        fromLightRot = lightTransform.eulerAngles;
+
+
         inGameMenu.SetActive(false);
         inGameUIGroup.alpha = 0;
         for (int i = 0; i < playersScoreText.Length; i++)
@@ -49,6 +56,18 @@ public class GameUI : MonoBehaviour
     {
         UsePauseMenu();
         UpdateUI();
+        UpdateLight();
+    }
+
+    private void UpdateLight()
+    {
+        float time = Mathf.Abs((gameTimeLeft / gameStartTime) - 1);
+
+        if (float.IsNaN(time))
+            lightTransform.rotation = Quaternion.Euler(fromLightRot);
+        else
+            lightTransform.rotation = Quaternion.Slerp(Quaternion.Euler(fromLightRot),Quaternion.Euler(toLightRot), time);
+
     }
 
     /// <summary>
@@ -174,6 +193,7 @@ public class GameUI : MonoBehaviour
     {
         playerCount = _playerCount;
         gameTimeLeft = gameTime - cheatTimeMakeZero;
+        gameStartTime = gameTimeLeft;
 
         for (int i = 0; i < playerCount; i++)
         {

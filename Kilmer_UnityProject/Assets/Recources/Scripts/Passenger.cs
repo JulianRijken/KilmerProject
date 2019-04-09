@@ -11,6 +11,7 @@ public class Passenger : MonoBehaviour
         cam = Camera.main.transform;
         transform.LookAt(cam);
         transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+
     }
 
     private void Update()

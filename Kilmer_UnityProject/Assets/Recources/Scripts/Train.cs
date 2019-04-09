@@ -123,7 +123,6 @@ public class Train : MonoBehaviour
 
                 float zRot = GetKeyInput() * settings.global.curveMultiple;
                 Quaternion toRot = Quaternion.Euler(new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRot));
-
                 transform.GetChild(0).transform.rotation = Quaternion.Slerp(transform.GetChild(0).transform.rotation, toRot, Time.deltaTime / settings.global.curveRecoverTime);
 
                 // Rotate y
