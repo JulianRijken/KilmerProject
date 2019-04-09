@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: 9e945a7c4ad3ca44380d78fe14623448
+guid: 261393cb7b074e542b270509da79d59a
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
-    100002: pCube1
+    100002: Prop_Bin
     400000: //RootNode
-    400002: pCube1
-    2100000: pCube1Mat
-    2300000: pCube1
-    3300000: pCube1
-    4300000: pCube1
+    400002: Prop_Bin
+    2100000: Prop_BinMat
+    2300000: Prop_Bin
+    3300000: Prop_Bin
+    4300000: Prop_Bin
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -42,7 +42,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.3
+    globalScale: 0.4
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1

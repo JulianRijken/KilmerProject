@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: 5e87fc044f0ce08459d4b2aac52c8067
+guid: 0d2b72421e160514ea3463f9dfad0482
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: //RootNode
-    100002: Building_01_Low:Building_01
-    400000: //RootNode
-    400002: Building_01_Low:Building_01
-    2100000: Building_01_Low_Building_01Mat
-    2300000: Building_01_Low:Building_01
-    3300000: Building_01_Low:Building_01
-    4300000: Building_01_Low:Building_01
+    100000: pCube1
+    100002: //RootNode
+    400000: pCube1
+    400002: //RootNode
+    2100000: pCube1Mat
+    2300000: pCube1
+    3300000: pCube1
+    4300000: pCube1
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -42,7 +42,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.3
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
