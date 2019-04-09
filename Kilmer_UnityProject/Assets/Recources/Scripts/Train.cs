@@ -151,6 +151,9 @@ public class Train : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Removes The Train
+    /// </summary>
     IEnumerator KillTrain()
     {
         gettingRemoved = true;
@@ -166,6 +169,14 @@ public class Train : MonoBehaviour
             yield return new WaitForSeconds(0.03f);
 
             Instantiate(settings.global.WagonDeathEffect, wagons[i].transform.position, wagons[i].transform.rotation);
+
+            if (Random.Range(0, 2) == 0)
+            {
+                Rigidbody passangerRig = Instantiate(settings.global.passenger, wagons[i].transform.position, wagons[i].transform.rotation).GetComponent<Rigidbody>();
+
+                passangerRig.AddForce(Vector3.up * 5, ForceMode.Impulse);
+            }
+
             Destroy(wagons[i].gameObject);
         }
 

@@ -11,7 +11,8 @@ public class GlobalTrainSettings : ScriptableObject
     public float curveMultiple = 10;
     public int bufferSize = 10000;
 
-    public GameObject TrainDeathEffect;
-    public GameObject WagonDeathEffect;
-    public GameObject WagonAddEffect;
+    public GameObject TrainDeathEffect = null;
+    public GameObject WagonDeathEffect = null;
+    public GameObject WagonAddEffect = null;
+    public GameObject passenger = null;
 }

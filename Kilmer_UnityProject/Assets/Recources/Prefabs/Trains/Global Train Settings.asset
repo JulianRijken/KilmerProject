@@ -23,3 +23,5 @@ MonoBehaviour:
     type: 3}
   WagonAddEffect: {fileID: 3863390978334791965, guid: 172960b4ab0b7b548b4fa73650d4aa8f,
     type: 3}
+  passenger: {fileID: 1203784828494776425, guid: 1f9e9715b7fe33e4f80526b29ac15ae8,
+    type: 3}
