@@ -84,6 +84,18 @@ public class GameManager : MonoBehaviour
         cinemachineTargetGroup.AddMember(bus.transform, 1, 0);
 
     }
+    public void SpawBus(PlayerId playerId, HomeStation station, int points)
+    {
+        Bus bus = Instantiate(GetBusPrefab(playerId), station.busSpawnPoint.position, station.OutRotation.rotation).GetComponent<Bus>();
+
+        inGameVehicles.Add(bus.gameObject);
+
+        bus.SetPoints(points);
+
+        // Add to follow goup
+        cinemachineTargetGroup.AddMember(bus.transform, 1, 0);
+
+    }
 
     /// <summary>
     /// Spawns a train at a free station

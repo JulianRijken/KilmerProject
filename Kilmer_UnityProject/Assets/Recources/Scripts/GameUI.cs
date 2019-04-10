@@ -191,6 +191,7 @@ public class GameUI : MonoBehaviour
     /// </summary>
     public void StartGameUI(int _playerCount, int gameTime)
     {
+        Cursor.visible = false;
         playerCount = _playerCount;
         gameTimeLeft = gameTime - cheatTimeMakeZero;
         gameStartTime = gameTimeLeft;
@@ -231,12 +232,14 @@ public class GameUI : MonoBehaviour
                 if (gameManager.GetGameState().Equals(GameState.pause))
                 {
                     inGameMenu.SetActive(false);
+                    Cursor.visible = false;
                     timeScaleTimer = 0;
                     gameManager.SetGameState(GameState.Playing);
                 }
                 else if (gameManager.GetGameState().Equals(GameState.Playing))
                 {
                     inGameMenu.SetActive(true);
+                    Cursor.visible = true;
                     timeScaleTimer = 0;
                     gameManager.SetGameState(GameState.pause);
                 }
@@ -273,6 +276,8 @@ public class GameUI : MonoBehaviour
     public void Resume()
     {
         inGameMenu.SetActive(false);
+        Cursor.visible = false;
+        timeScaleTimer = 0;
         gameManager.SetGameState(GameState.Playing);
     }
 

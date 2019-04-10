@@ -197,7 +197,7 @@ public class Train : MonoBehaviour
             gameManager.RemoveCinemachineTargetGroupTarget(transform);
             inHomeStation = true;
             transform.rotation = Quaternion.Euler(0, station.InRotation.transform.eulerAngles.y, 0);
-            gameManager.SpawBus(settings.playerId, Random.Range(0, 3),wagons.Count);
+            gameManager.SpawBus(settings.playerId, station, wagons.Count);
 
             float timeToDestroy = ((wagons.Count * 0.25f) * (settings.global.moveSpeed / 10)) + 1;
             for (int i = 0; i < wagons.Count; i++)
