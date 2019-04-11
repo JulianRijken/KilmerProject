@@ -160,6 +160,7 @@ public class GameUI : MonoBehaviour
         gameManager.SetGameState(GameState.winScreen);
         winScreenGroup.SetActive(true);
         Time.timeScale = 0;
+        Cursor.visible = true;
 
         int bestPlayer = 0;
         for (int i = 0; i < playersScores.Length; i++)
