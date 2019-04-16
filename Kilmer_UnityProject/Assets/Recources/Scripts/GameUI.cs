@@ -13,6 +13,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] CanvasGroup inGameUIGroup = null;
     [SerializeField] private TextMeshProUGUI[] playersScoreText = null;
     [SerializeField] private TextMeshProUGUI gameTimeLeftText = null;
+    [SerializeField] private TextMeshProUGUI countdownText = null;
 
     [SerializeField] private TextMeshProUGUI winScreenText = null;
     [SerializeField] CanvasGroup winScreenCanvasGroup = null;
@@ -41,6 +42,7 @@ public class GameUI : MonoBehaviour
 
         inGameMenu.SetActive(false);
         inGameUIGroup.alpha = 0;
+        inGameUIGroup.gameObject.SetActive(false);
         for (int i = 0; i < playersScoreText.Length; i++)
         {
             playersScoreText[i].gameObject.SetActive(false);
@@ -105,6 +107,7 @@ public class GameUI : MonoBehaviour
             }
             else
             {
+                inGameUIGroup.gameObject.SetActive(true);
                 // alpha
                 inGameUIGroup.alpha += Time.deltaTime;
 
@@ -280,6 +283,34 @@ public class GameUI : MonoBehaviour
         Cursor.visible = false;
         timeScaleTimer = 0;
         gameManager.SetGameState(GameState.Playing);
+
+    }
+
+    public void StartCountdown(int seconds)
+    {
+        StartCoroutine(_StartCountdown(seconds));
+    }
+    private IEnumerator _StartCountdown(int seconds)
+    {
+        float time = seconds;
+        seconds--;
+        countdownText.text = time.ToString();
+        Animator animator = countdownText.GetComponent<Animator>();
+        animator.SetTrigger("Add");
+
+        for (int i = 0; i < seconds; i++)
+        {
+            time--;
+            countdownText.text = time.ToString();
+            animator.SetTrigger("Add");
+            yield return new WaitForSeconds(1);
+        }
+
+        countdownText.text = "START!";
+        animator.SetTrigger("Add");
+        yield return new WaitForSeconds(1);
+
+        Destroy(countdownText.gameObject);
     }
 
 }

@@ -29,11 +29,14 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private List<Image> playerSprites = new List<Image>();
 
 
+
     private void Start()
     {
         playerSlider.value = PlayerPrefs.GetInt("playerCount");
         timeSlider.value = PlayerPrefs.GetInt("gameTime");
         volumeSlider.value = PlayerPrefs.GetInt("gameVolume");
+
+        AudioListener.volume = (volumeSlider.value / 100f);
     }
 
     private void Update()
@@ -124,7 +127,7 @@ public class MainMenu : MonoBehaviour
         if (gameManager.GetGameState().Equals(GameState.Menu))
         {
             camaraAnimatior.SetTrigger("StartGame");
-            gameUI.StartGameUI(PlayerPrefs.GetInt("playerCount"), (PlayerPrefs.GetInt("gameTime") * 30) + 5 * 60);
+            gameUI.StartGameUI(PlayerPrefs.GetInt("playerCount"), (PlayerPrefs.GetInt("gameTime") * 30) + (5 * 60) + gameManager.GetCountdownTime());
             gameManager.StartGame(PlayerPrefs.GetInt("playerCount"));
         }
     }
@@ -140,6 +143,8 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetInt("playerCount", (int)playerSlider.value);
         PlayerPrefs.SetInt("gameTime", (int)timeSlider.value);
         PlayerPrefs.SetInt("gameVolume", (int)volumeSlider.value);
+
+        AudioListener.volume = (volumeSlider.value / 100f);
     }
 
     /// <summary>

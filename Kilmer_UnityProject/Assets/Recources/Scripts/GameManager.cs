@@ -26,6 +26,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private VehiclePrefabs vehiclePrefabs = null;
     [SerializeField] private MainMenu mainMenu = null;
+    [SerializeField] private Transform[] camRemoveStart = null;
+    [SerializeField] private int countdownTime = 5;
+    [SerializeField] private GameUI gameUI = null;
 
     private List<HomeStation> homeStations = new List<HomeStation>();
     private CinemachineTargetGroup cinemachineTargetGroup;
@@ -45,6 +48,8 @@ public class GameManager : MonoBehaviour
         {
             homeStations.Add(go[i].GetComponent<HomeStation>());
         }
+
+        countdownTime++;
     }
 
 
@@ -57,11 +62,21 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator IStartGame(int players)
     {
-        SetGameState(GameState.Playing);
 
         yield return new WaitForSeconds(1);
 
         mainMenu.gameObject.SetActive(false);
+        gameUI.StartCountdown(countdownTime);
+        SetGameState(GameState.Playing);
+
+        yield return new WaitForSeconds(countdownTime - 1);
+
+
+        for (int i = 0; i < camRemoveStart.Length; i++)
+        {
+            RemoveCinemachineTargetGroupTarget(camRemoveStart[i]);
+        }
+
 
         for (int i = 0; i < players; i++)
         {
@@ -218,5 +233,12 @@ public class GameManager : MonoBehaviour
         gameState = state;
     }
 
+    /// <summary>
+    /// Retuns the countdown time
+    /// </summary>
+    public int GetCountdownTime()
+    {
+        return countdownTime;
+    }
 
 }
