@@ -100,8 +100,11 @@ public class Train : MonoBehaviour
         totalWagonDistance = wagon.distance + totalWagonDistance;
         wagon.distance = totalWagonDistance;
         wagons.Add(wagon);
-        Instantiate(settings.global.WagonAddEffect, wagon.transform.position = bufferTransforms[settings.global.bufferSize - totalWagonDistance].position, wagon.transform.rotation = bufferTransforms[settings.global.bufferSize - totalWagonDistance].rotation);
         MoveWagons();
+
+        if(settings.global.WagonAddEffect != null)
+        Instantiate(settings.global.WagonAddEffect, wagon.transform.position + (wagon.transform.up * 0.5f), Quaternion.Euler(Vector3.up), wagon.transform  );
+
     }
 
 
