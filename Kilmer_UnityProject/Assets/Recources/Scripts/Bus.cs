@@ -8,12 +8,20 @@ public class Bus : MonoBehaviour
     private GameManager gameManager;
     private Rigidbody rig;
     private WheelCollider[] wheels;
+    private Animator animator;
+    [SerializeField] private CanvasGroup infoGroup;
 
     private int points;
 
     private bool spawning = true;
+    private bool keyPressed = false;
 
     private float lifeTime;
+
+    private void Awake()
+    {
+        infoGroup.alpha = 0;
+    }
 
     void Start()
     {
@@ -21,9 +29,11 @@ public class Bus : MonoBehaviour
         wheels = GetComponentsInChildren<WheelCollider>();
         rig.constraints = RigidbodyConstraints.FreezeAll;
         spawning = true;
+        animator = GetComponent<Animator>();
 
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         lifeTime = 0;
+
 
     }
 
@@ -34,7 +44,17 @@ public class Bus : MonoBehaviour
         if (spawning)
             Spawn();
         else
+        {
             Move();
+            infoGroup.alpha += Time.deltaTime * 3;
+        }
+
+        if(keyPressed == false)
+            if (GetKeyInput().y != 0f)
+            {
+                animator.SetBool("Key", true);
+                keyPressed = true;
+            }
     }
 
     public float GetLifeTime()

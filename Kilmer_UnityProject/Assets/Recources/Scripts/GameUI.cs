@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class GameUI : MonoBehaviour
 {
-
+    [SerializeField] private Animator camaraAnimatior = null;
     [SerializeField] GameManager gameManager = null;
     [SerializeField] GameObject inGameMenu = null;
     [SerializeField] CanvasGroup inGameUIGroup = null;
@@ -30,7 +30,7 @@ public class GameUI : MonoBehaviour
     private int playerCount;
     private float gameTimeLeft;
 
-    [SerializeField]  private Transform lightTransform;
+    [SerializeField] private Transform lightTransform;
     [SerializeField] private Vector3 toLightRot;
     private float gameStartTime;
     private Vector3 fromLightRot;
@@ -68,7 +68,7 @@ public class GameUI : MonoBehaviour
         if (float.IsNaN(time))
             lightTransform.rotation = Quaternion.Euler(fromLightRot);
         else
-            lightTransform.rotation = Quaternion.Slerp(Quaternion.Euler(fromLightRot),Quaternion.Euler(toLightRot), time);
+            lightTransform.rotation = Quaternion.Slerp(Quaternion.Euler(fromLightRot), Quaternion.Euler(toLightRot), time);
 
     }
 
@@ -165,6 +165,9 @@ public class GameUI : MonoBehaviour
         Time.timeScale = 0;
         Cursor.visible = true;
 
+        camaraAnimatior.SetTrigger("WinScreen");
+
+
         int bestPlayer = 0;
         for (int i = 0; i < playersScores.Length; i++)
         {
@@ -174,14 +177,32 @@ public class GameUI : MonoBehaviour
             }
         }
 
-        winScreenText.text = "GameEind, the best player is player: " + bestPlayer + " the score was: " + playersScores[bestPlayer];
+        switch (bestPlayer)
+        {
+            case 0:
+                winScreenText.text = "Yellow Wins!";
+
+                break;
+            case 1:
+                winScreenText.text = "Red Wins!";
+
+                break;
+            case 2:
+                winScreenText.text = "Blue Wins!";
+
+                break;
+            case 3:
+                winScreenText.text = "Purple Wins!";
+
+                break;
+        }
 
         while (inGameUIGroup.alpha > 0)
         {
             inGameUIGroup.alpha -= Time.unscaledDeltaTime * 3;
             yield return new WaitForEndOfFrame();
         }
-        
+
         while (winScreenCanvasGroup.alpha < 1)
         {
             winScreenCanvasGroup.alpha += Time.unscaledDeltaTime * 3;
@@ -203,9 +224,22 @@ public class GameUI : MonoBehaviour
         for (int i = 0; i < playerCount; i++)
         {
             playersScoreText[i].gameObject.SetActive(true);
-        }
+            switch (Mathf.Abs(playerCount - 4))
+            {
+                case 0:
+                    playersScoreText[i].rectTransform.position += new Vector3(0,0);
+                    break;
+                case 1:
+                    playersScoreText[i].rectTransform.position += new Vector3(20, 0);
+                    break;
+                case 2:
+                    playersScoreText[i].rectTransform.position += new Vector3(55, 0);
+                    break;
 
+            }
+        }
     }
+
 
     /// <summary>
     /// Adds score to the playerScores
@@ -296,14 +330,15 @@ public class GameUI : MonoBehaviour
         seconds--;
         countdownText.text = time.ToString();
         Animator animator = countdownText.GetComponent<Animator>();
-        animator.SetTrigger("Add");
+
 
         for (int i = 0; i < seconds; i++)
         {
             time--;
             countdownText.text = time.ToString();
-            animator.SetTrigger("Add");
             yield return new WaitForSeconds(1);
+            animator.SetTrigger("Add");
+
         }
 
         countdownText.text = "START!";

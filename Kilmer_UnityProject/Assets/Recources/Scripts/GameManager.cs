@@ -52,7 +52,6 @@ public class GameManager : MonoBehaviour
         countdownTime++;
     }
 
-
     /// <summary>
     /// Starts the game
     /// </summary>
