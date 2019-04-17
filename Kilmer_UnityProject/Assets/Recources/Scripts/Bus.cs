@@ -9,7 +9,7 @@ public class Bus : MonoBehaviour
     private Rigidbody rig;
     private WheelCollider[] wheels;
     private Animator animator;
-    [SerializeField] private CanvasGroup infoGroup;
+    [SerializeField] private CanvasGroup infoGroup = null;
 
     private int points;
 

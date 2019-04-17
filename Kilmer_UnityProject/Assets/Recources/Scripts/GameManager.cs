@@ -61,12 +61,13 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator IStartGame(int players)
     {
+        SetGameState(GameState.Playing);
 
         yield return new WaitForSeconds(1);
 
         mainMenu.gameObject.SetActive(false);
         gameUI.StartCountdown(countdownTime);
-        SetGameState(GameState.Playing);
+        
 
         yield return new WaitForSeconds(countdownTime - 1);
 

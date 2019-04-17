@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Water : MonoBehaviour
 {
-    [SerializeField] private float offset;
-    [SerializeField] private float scale;
-    [SerializeField] private float speed;
+    [SerializeField] private float offset = -0.5f;
+    [SerializeField] private float scale = 0.4f;
+    [SerializeField] private float speed = 1f;
 
 
     void Update()

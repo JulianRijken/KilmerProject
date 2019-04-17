@@ -20,7 +20,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] GameObject winScreenGroup = null;
     [SerializeField] private float cheatTimeMakeZero;
 
-    [SerializeField] private Color overtimeColor;
+    [SerializeField] private Color overtimeColor = Color.red;
 
 
     private int[] playersScores = new int[4];
@@ -30,8 +30,8 @@ public class GameUI : MonoBehaviour
     private int playerCount;
     private float gameTimeLeft;
 
-    [SerializeField] private Transform lightTransform;
-    [SerializeField] private Vector3 toLightRot;
+    [SerializeField] private Transform lightTransform = null;
+    [SerializeField] private Vector3 toLightRot = new Vector3();
     private float gameStartTime;
     private Vector3 fromLightRot;
 
@@ -233,13 +233,12 @@ public class GameUI : MonoBehaviour
                     playersScoreText[i].rectTransform.position += new Vector3(20, 0);
                     break;
                 case 2:
-                    playersScoreText[i].rectTransform.position += new Vector3(55, 0);
+                    playersScoreText[i].rectTransform.position += new Vector3(60, 0);
                     break;
 
             }
         }
     }
-
 
     /// <summary>
     /// Adds score to the playerScores
