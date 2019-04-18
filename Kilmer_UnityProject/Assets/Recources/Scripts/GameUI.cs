@@ -22,24 +22,23 @@ public class GameUI : MonoBehaviour
 
     [SerializeField] private Color overtimeColor = Color.red;
 
-
     private int[] playersScores = new int[4];
     private float timeScaleTimer;
 
-
     private int playerCount;
     private float gameTimeLeft;
+    private float gameStartTime;
 
     [SerializeField] private Transform lightTransform = null;
     [SerializeField] private Vector3 toLightRot = new Vector3();
-    private float gameStartTime;
     private Vector3 fromLightRot;
+
 
     private void Start()
     {
         fromLightRot = lightTransform.eulerAngles;
 
-
+        countdownText.gameObject.SetActive(false);
         inGameMenu.SetActive(false);
         inGameUIGroup.alpha = 0;
         inGameUIGroup.gameObject.SetActive(false);
@@ -61,6 +60,9 @@ public class GameUI : MonoBehaviour
         UpdateLight();
     }
 
+    /// <summary>
+    /// Rotates the diractional light
+    /// </summary>
     private void UpdateLight()
     {
         float time = Mathf.Abs((gameTimeLeft / gameStartTime) - 1);
@@ -164,6 +166,7 @@ public class GameUI : MonoBehaviour
         winScreenGroup.SetActive(true);
         Time.timeScale = 0;
         Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         camaraAnimatior.SetTrigger("WinScreen");
 
@@ -214,11 +217,12 @@ public class GameUI : MonoBehaviour
     /// <summary>
     /// Sets up all the game Ui
     /// </summary>
-    public void StartGameUI(int _playerCount, int gameTime)
+    public void StartGameUI(int _playerCount, int _gameTime, int _countdownTime)
     {
-        Cursor.visible = false;
+        StartCountdown(_countdownTime);
+
         playerCount = _playerCount;
-        gameTimeLeft = gameTime - cheatTimeMakeZero;
+        gameTimeLeft = _gameTime - cheatTimeMakeZero;
         gameStartTime = gameTimeLeft;
 
         for (int i = 0; i < playerCount; i++)
@@ -262,23 +266,18 @@ public class GameUI : MonoBehaviour
     /// </summary>
     private void UsePauseMenu()
     {
-        if (!gameManager.GetGameState().Equals(GameState.winScreen))
+
+        if (gameManager.GetGameState().Equals(GameState.Playing) || gameManager.GetGameState().Equals(GameState.pause))
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (gameManager.GetGameState().Equals(GameState.pause))
                 {
-                    inGameMenu.SetActive(false);
-                    Cursor.visible = false;
-                    timeScaleTimer = 0;
-                    gameManager.SetGameState(GameState.Playing);
+                    Resume();
                 }
                 else if (gameManager.GetGameState().Equals(GameState.Playing))
                 {
-                    inGameMenu.SetActive(true);
-                    Cursor.visible = true;
-                    timeScaleTimer = 0;
-                    gameManager.SetGameState(GameState.pause);
+                    OpenPauseMenu();
                 }
             }
 
@@ -296,7 +295,7 @@ public class GameUI : MonoBehaviour
     /// </summary>
     public void ReturnToMainMenu()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     /// <summary>
@@ -314,30 +313,38 @@ public class GameUI : MonoBehaviour
     {
         inGameMenu.SetActive(false);
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         timeScaleTimer = 0;
         gameManager.SetGameState(GameState.Playing);
 
     }
-
-    public void StartCountdown(int seconds)
+    public void OpenPauseMenu()
     {
-        StartCoroutine(_StartCountdown(seconds));
+        inGameMenu.SetActive(true);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        timeScaleTimer = 0;
+        gameManager.SetGameState(GameState.pause);
+
     }
-    private IEnumerator _StartCountdown(int seconds)
+
+
+    public void StartCountdown(int _countdownTime)
     {
-        float time = seconds;
-        seconds--;
-        countdownText.text = time.ToString();
+        StartCoroutine(IStartCountdown(_countdownTime));
+    }
+    private IEnumerator IStartCountdown(int _countdownTime)
+    {
+        int time = _countdownTime;
         Animator animator = countdownText.GetComponent<Animator>();
+        countdownText.gameObject.SetActive(true);
 
-
-        for (int i = 0; i < seconds; i++)
+        for (int i = 0; i < _countdownTime; i++)
         {
-            time--;
             countdownText.text = time.ToString();
-            yield return new WaitForSeconds(1);
             animator.SetTrigger("Add");
-
+            time--;
+            yield return new WaitForSeconds(1);
         }
 
         countdownText.text = "START!";

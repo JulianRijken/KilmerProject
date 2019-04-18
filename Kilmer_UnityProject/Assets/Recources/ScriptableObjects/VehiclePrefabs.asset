@@ -30,11 +30,11 @@ MonoBehaviour:
     prefab: {fileID: 2252909298361004606, guid: 7d2ad527c376dcf4f8688845a8f5f33e,
       type: 3}
   - playerId: 1
-    prefab: {fileID: 2252909298361004606, guid: 8f6190399a9589a4282b318c9ffa02b2,
+    prefab: {fileID: 2252909298361004606, guid: 8e7771a2ed81cb54daf64bd84cd24f7c,
       type: 3}
   - playerId: 2
-    prefab: {fileID: 2252909298361004606, guid: 536877c9879e07342a725184a1abf0b8,
+    prefab: {fileID: 2252909298361004606, guid: b1147f7aa6a964243bd6242cf21bcf19,
       type: 3}
   - playerId: 3
-    prefab: {fileID: 2252909298361004606, guid: e10161c1a8842bd43b7f880cf652a8fa,
+    prefab: {fileID: 2252909298361004606, guid: 0d3dd6fa99642e84db8fc4b770a8ce9a,
       type: 3}

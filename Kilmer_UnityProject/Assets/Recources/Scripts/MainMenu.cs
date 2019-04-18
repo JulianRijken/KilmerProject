@@ -28,6 +28,7 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField] private List<Image> playerSprites = new List<Image>();
 
+    [SerializeField] private int countdownTime = 6;
 
 
     private void Start()
@@ -124,12 +125,17 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
-        if (gameManager.GetGameState().Equals(GameState.Menu))
-        {
-            camaraAnimatior.SetTrigger("StartGame");
-            gameUI.StartGameUI(PlayerPrefs.GetInt("playerCount"), (PlayerPrefs.GetInt("gameTime") * 30) + (5 * 60) + gameManager.GetCountdownTime());
-            gameManager.StartGame(PlayerPrefs.GetInt("playerCount"));
-        }
+        if (gameManager.GetGameState().Equals(GameState.Menu))       
+            StartCoroutine(IStartGame());      
+    }
+    private IEnumerator IStartGame()
+    {
+        camaraAnimatior.SetTrigger("StartGame");
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        yield return new WaitForSeconds(1);
+        gameUI.StartGameUI(PlayerPrefs.GetInt("playerCount"), (PlayerPrefs.GetInt("gameTime") * 30) + (5 * 60),countdownTime);
+        gameManager.StartGame(PlayerPrefs.GetInt("playerCount"),countdownTime);
     }
 
     /// <summary>

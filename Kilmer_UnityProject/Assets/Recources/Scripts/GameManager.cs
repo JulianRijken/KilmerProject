@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private VehiclePrefabs vehiclePrefabs = null;
     [SerializeField] private MainMenu mainMenu = null;
     [SerializeField] private Transform[] camRemoveStart = null;
-    [SerializeField] private int countdownTime = 5;
     [SerializeField] private GameUI gameUI = null;
 
     private List<HomeStation> homeStations = new List<HomeStation>();
@@ -41,6 +40,7 @@ public class GameManager : MonoBehaviour
     {
         cinemachineTargetGroup = FindObjectOfType<CinemachineTargetGroup>();
         SetGameState(GameState.Menu);
+        Time.timeScale = 1;
 
         // Get all stations
         GameObject[] go = GameObject.FindGameObjectsWithTag("HomeStation");
@@ -48,46 +48,38 @@ public class GameManager : MonoBehaviour
         {
             homeStations.Add(go[i].GetComponent<HomeStation>());
         }
-
-        countdownTime++;
     }
 
     /// <summary>
     /// Starts the game
     /// </summary>
-    public void StartGame(int players)
+    public void StartGame(int _players, int _countdownTime)
     {
-        StartCoroutine(IStartGame(players));
+        StartCoroutine(IStartGame(_players, _countdownTime));
     }
-    private IEnumerator IStartGame(int players)
+    private IEnumerator IStartGame(int _players, int _countdownTime)
     {
-        SetGameState(GameState.Playing);
-
-        yield return new WaitForSeconds(1);
-
         mainMenu.gameObject.SetActive(false);
-        gameUI.StartCountdown(countdownTime);
-        
 
-        yield return new WaitForSeconds(countdownTime - 1);
+        yield return new WaitForSeconds(_countdownTime);
 
+        SetGameState(GameState.Playing);
 
         for (int i = 0; i < camRemoveStart.Length; i++)
         {
             RemoveCinemachineTargetGroupTarget(camRemoveStart[i]);
         }
-
-
-        for (int i = 0; i < players; i++)
+        for (int i = 0; i < _players; i++)
         {
             SpawnTrain((PlayerId)i, 0);
         }
+
     }
 
     /// <summary>
     /// Spawns a bus at a random station
     /// </summary>
-    public void SpawBus(PlayerId playerId,int station,int points)
+    public void SpawBus(PlayerId playerId, int station, int points)
     {
         Bus bus = Instantiate(GetBusPrefab(playerId), homeStations[station].busSpawnPoint.position, homeStations[station].OutRotation.rotation).GetComponent<Bus>();
 
@@ -198,7 +190,6 @@ public class GameManager : MonoBehaviour
             if (vehiclePrefabs.trainPrefabs[i].playerId == playerId)
                 return vehiclePrefabs.trainPrefabs[i].prefab;
 
-
         Debug.LogError("playerId Prefab Does Not Exist");
         return null;
     }
@@ -231,14 +222,6 @@ public class GameManager : MonoBehaviour
     public void SetGameState(GameState state)
     {
         gameState = state;
-    }
-
-    /// <summary>
-    /// Retuns the countdown time
-    /// </summary>
-    public int GetCountdownTime()
-    {
-        return countdownTime;
     }
 
 }
