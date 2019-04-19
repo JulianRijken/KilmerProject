@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
     {
         mainMenu.gameObject.SetActive(false);
 
-        yield return new WaitForSeconds(_countdownTime);
+        yield return new WaitForSeconds(_countdownTime - 0.1f);
 
         SetGameState(GameState.Playing);
 

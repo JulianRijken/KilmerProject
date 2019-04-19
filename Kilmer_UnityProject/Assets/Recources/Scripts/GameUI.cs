@@ -33,9 +33,16 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Vector3 toLightRot = new Vector3();
     private Vector3 fromLightRot;
 
+    [SerializeField] private AudioSource counterBeep = new AudioSource();
+    [SerializeField] private GameObject addPointSound = null;
+    [SerializeField] private GameObject tikSound = null;
+    private bool lastTimeSound = false;
+
 
     private void Start()
     {
+        lastTimeSound = false;
+
         fromLightRot = lightTransform.eulerAngles;
 
         countdownText.gameObject.SetActive(false);
@@ -122,8 +129,31 @@ public class GameUI : MonoBehaviour
             }
 
 
+            if(gameTimeLeft <= 30)
+            {
+                if(lastTimeSound == false)
+                {
+                    StartCoroutine(ITikSound());
+                    lastTimeSound = true;
+                }
+            }
 
 
+
+        }
+    }
+
+
+    IEnumerator ITikSound()
+    {
+        while (!gameManager.GetGameState().Equals(GameState.winScreen))
+        {
+            Instantiate(tikSound);
+            yield return new WaitUntil(() => gameManager.GetGameState().Equals(GameState.Playing));
+            yield return new WaitForSeconds(Mathf.Clamp(gameTimeLeft / (float)30,0.1f,1f));
+
+            if (gameTimeLeft == 0)
+                break;
         }
     }
 
@@ -167,6 +197,7 @@ public class GameUI : MonoBehaviour
         Time.timeScale = 0;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        AudioListener.pause = true;
 
         camaraAnimatior.SetTrigger("WinScreen");
 
@@ -257,6 +288,15 @@ public class GameUI : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             playersScoreText[(int)playerID].GetComponent<Animator>().SetTrigger("Add");
+
+            AudioSource audio = Instantiate(addPointSound).GetComponent<AudioSource>();
+            if (audio != null)
+            {
+                audio.pitch = ((float)i / (float)score) + 1f;
+                audio.Play();
+            }
+            
+
             playersScores[(int)playerID]++;
         }
     }
@@ -295,6 +335,7 @@ public class GameUI : MonoBehaviour
     /// </summary>
     public void ReturnToMainMenu()
     {
+        AudioListener.pause = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -345,6 +386,7 @@ public class GameUI : MonoBehaviour
         {
             countdownText.text = time.ToString();
             animator.SetTrigger("Add");
+            counterBeep.Play();
             time--;
             yield return new WaitForSeconds(1);
         }

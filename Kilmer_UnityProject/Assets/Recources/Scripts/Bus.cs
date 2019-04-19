@@ -10,6 +10,8 @@ public class Bus : MonoBehaviour
     private WheelCollider[] wheels;
     private Animator animator;
     [SerializeField] private CanvasGroup infoGroup = null;
+    [SerializeField] private AudioSource engineSound = null;
+    [SerializeField] private AudioSource hornSound = null;
 
     private int points;
 
@@ -33,6 +35,8 @@ public class Bus : MonoBehaviour
 
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         lifeTime = 0;
+
+        hornSound.PlayDelayed(0.6f);
     }
 
     void Update()
@@ -53,6 +57,9 @@ public class Bus : MonoBehaviour
                 animator.SetBool("Key", true);
                 keyPressed = true;
             }
+
+        engineSound.pitch = (rig.velocity.magnitude / settings.maxVelocity) + 1;
+
     }
 
     public float GetLifeTime()
