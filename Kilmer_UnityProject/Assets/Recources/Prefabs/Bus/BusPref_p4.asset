@@ -20,3 +20,5 @@ MonoBehaviour:
   upKey: 264
   downKey: 261
   playerId: 3
+  deadBusPrefab: {fileID: 2252909298361004606, guid: 7b6752009a3e2f44281ce1e486e5d222,
+    type: 3}

@@ -16,4 +16,6 @@ public class BusSettings : ScriptableObject
 
     public PlayerId playerId;
 
+    public GameObject deadBusPrefab;
+
 }

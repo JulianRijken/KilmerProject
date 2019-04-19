@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!241 &24100000
+AudioMixerController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TrainRumble
+  m_OutputGroup: {fileID: 0}
+  m_MasterGroup: {fileID: 24300002}
+  m_Snapshots:
+  - {fileID: 24500006}
+  m_StartSnapshot: {fileID: 24500006}
+  m_SuspendThreshold: -80
+  m_EnableSuspend: 1
+  m_UpdateMode: 0
+  m_ExposedParameters: []
+  m_AudioMixerGroupViews:
+  - guids:
+    - d33bad9b80b49494ab9bb165877049a3
+    name: View
+  m_CurrentViewIndex: 0
+  m_TargetSnapshot: {fileID: 24500006}
+--- !u!243 &24300002
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Master
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: d33bad9b80b49494ab9bb165877049a3
+  m_Children: []
+  m_Volume: 99bba32e4197f4a4389a3c9c85d15f5f
+  m_Pitch: d7f243bf4fa9a5a4d85c4e16ea140f6c
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: 24400004}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!244 &24400004
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 354067dab7eee1549802b5efd3faa8a8
+  m_EffectName: Attenuation
+  m_MixLevel: 4191ba02796a9be4088c93a05474a4c4
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!245 &24500006
+AudioMixerSnapshotController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Snapshot
+  m_AudioMixer: {fileID: 24100000}
+  m_SnapshotID: ead3ba3d22cc43742bb6137b655373f5
+  m_FloatValues:
+    21e1dc73df8abf9469d60b4aef099404: 1
+    04e797e56eecd6c4f85c73cd004daaf8: 1
+    487c3ac631dfd084aa602d74b92fc38f: 0.72
+    5c4dd8f6ca8e3364ea5f8003fb0db410: 0.33
+    f7dd357823477224fb4c3278136f781f: 0
+    deca11e94e4e1c9489b98555607def5d: 22000
+    01fdfd9ac71111d4283641057a3d44fe: -10000
+    27aaaf6d73f701a449bec9a87103907b: 0
+    3f271b3f915026e47afdbbba49a35db8: 0.35
+  m_TransitionOverrides: {}

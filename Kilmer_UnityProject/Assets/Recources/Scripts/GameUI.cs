@@ -315,6 +315,7 @@ public class GameUI : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         timeScaleTimer = 0;
+        AudioListener.pause = false;
         gameManager.SetGameState(GameState.Playing);
 
     }
@@ -324,6 +325,7 @@ public class GameUI : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         timeScaleTimer = 0;
+        AudioListener.pause = true;
         gameManager.SetGameState(GameState.pause);
 
     }

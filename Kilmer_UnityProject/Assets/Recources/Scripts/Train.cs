@@ -160,7 +160,9 @@ public class Train : MonoBehaviour
     {
         gettingRemoved = true;
 
-        Instantiate(settings.global.TrainDeathEffect, transform.position, transform.rotation);
+        DeadVehicle go = Instantiate(settings.global.TrainDeathEffect, transform.position, transform.rotation).GetComponent<DeadVehicle>();
+        if (go != null)
+            go.SetVelocity(rig.velocity);
 
         GetComponent<BoxCollider>().enabled = false;
         Destroy(transform.GetChild(0).gameObject);

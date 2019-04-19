@@ -33,8 +33,6 @@ public class Bus : MonoBehaviour
 
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         lifeTime = 0;
-
-
     }
 
     void Update()
@@ -171,6 +169,11 @@ public class Bus : MonoBehaviour
     private void KillBus()
     {
         gameManager.SpawnTrain(settings.playerId, 5);
+        DeadVehicle go = Instantiate(settings.deadBusPrefab, transform.position, transform.rotation).GetComponent<DeadVehicle>();
+
+        if (go != null)
+            go.SetVelocity(rig.velocity);
+
         Destroy(gameObject);
     }
 
