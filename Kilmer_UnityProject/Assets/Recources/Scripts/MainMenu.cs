@@ -30,9 +30,13 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField] private int countdownTime = 6;
 
+    [SerializeField] private GameObject inGameObjects;
+
 
     private void Start()
     {
+
+        inGameObjects.SetActive(false);
         playerSlider.value = PlayerPrefs.GetInt("playerCount");
         timeSlider.value = PlayerPrefs.GetInt("gameTime");
         volumeSlider.value = PlayerPrefs.GetInt("gameVolume");
@@ -134,6 +138,7 @@ public class MainMenu : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         yield return new WaitForSeconds(1);
+        inGameObjects.SetActive(true);
         gameUI.StartGameUI(PlayerPrefs.GetInt("playerCount"), (PlayerPrefs.GetInt("gameTime") * 30) + (5 * 60),countdownTime);
         gameManager.StartGame(PlayerPrefs.GetInt("playerCount"),countdownTime);
     }
