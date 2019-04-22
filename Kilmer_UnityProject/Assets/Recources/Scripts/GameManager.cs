@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private MainMenu mainMenu = null;
     [SerializeField] private Transform[] camRemoveStart = null;
     [SerializeField] private GameUI gameUI = null;
+    [SerializeField] private Animator busMiddleInfoAnimator = null;
 
     private List<HomeStation> homeStations = new List<HomeStation>();
     private CinemachineTargetGroup cinemachineTargetGroup;
@@ -35,6 +36,7 @@ public class GameManager : MonoBehaviour
     private GameState gameState;
 
     private List<GameObject> inGameVehicles = new List<GameObject>();
+
 
     void Start()
     {
@@ -98,6 +100,7 @@ public class GameManager : MonoBehaviour
         inGameVehicles.Add(bus.gameObject);
 
         bus.SetPoints(points);
+        busMiddleInfoAnimator.SetTrigger("Start");
 
         // Add to follow goup
         cinemachineTargetGroup.AddMember(bus.transform, 1, 0);
