@@ -22,3 +22,5 @@ MonoBehaviour:
   playerId: 3
   deadBusPrefab: {fileID: 2252909298361004606, guid: 7b6752009a3e2f44281ce1e486e5d222,
     type: 3}
+  finishPrefab: {fileID: 1025285306637258, guid: 47919c78524ed3442b63f1bd94403284,
+    type: 3}

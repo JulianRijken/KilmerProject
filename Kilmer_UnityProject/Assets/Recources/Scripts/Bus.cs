@@ -187,6 +187,7 @@ public class Bus : MonoBehaviour
     public void EnterStation()
     {
         gameManager.SpawnTrain(settings.playerId, 1);
+        Instantiate(settings.finishPrefab, transform.position, transform.rotation);
         Destroy(gameObject);
     }
 

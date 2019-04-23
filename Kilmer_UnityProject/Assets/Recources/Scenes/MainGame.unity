@@ -3174,7 +3174,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1350697056}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 45, y: 60.000004, z: 0}
 --- !u!1 &178136533
 GameObject:
@@ -3270,7 +3270,7 @@ Transform:
   - {fileID: 1990608311}
   - {fileID: 1190006993}
   m_Father: {fileID: 1350697056}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &182125849
 GameObject:
@@ -16229,7 +16229,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1350697056}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &869604927
 PrefabInstance:
@@ -22389,7 +22389,7 @@ Transform:
   - {fileID: 835902433}
   - {fileID: 1308623511}
   m_Father: {fileID: 1350697056}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1205075009
 GameObject:
@@ -25748,7 +25748,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 252588389}
-  - {fileID: 2108056741}
   - {fileID: 170076735}
   - {fileID: 865171130}
   - {fileID: 1764533040}
@@ -33460,7 +33459,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1760628797}
   m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 0.29256982, y: 26.85341, z: -34.401936}
+  m_LocalPosition: {x: 0.29257017, y: 26.85341, z: -34.401936}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 684852225}
@@ -33620,7 +33619,7 @@ Transform:
   m_LocalScale: {x: 50.432915, y: 9.302994, z: 48.941784}
   m_Children: []
   m_Father: {fileID: 1350697056}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1764717203
 MeshRenderer:
@@ -39833,6 +39832,7 @@ GameObject:
   - component: {fileID: 2057833077}
   - component: {fileID: 2057833078}
   - component: {fileID: 2057833079}
+  - component: {fileID: 2057833080}
   m_Layer: 0
   m_Name: BusObjectivePointer_BusLogo
   m_TagString: Untagged
@@ -39848,7 +39848,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2057833076}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.033363342, y: 4.29, z: 0.17021179}
+  m_LocalPosition: {x: 0.033363342, y: 4.29, z: 1.17}
   m_LocalScale: {x: 0.92521, y: 1, z: 1}
   m_Children:
   - {fileID: 444923283}
@@ -39922,6 +39922,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2057833080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057833076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bbad2801384ab1449db681ddfdc18f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnlyYAxis: 1
 --- !u!33 &2057963693
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -41175,7 +41188,7 @@ GameObject:
   - component: {fileID: 2108056742}
   - component: {fileID: 2108056738}
   m_Layer: 0
-  m_Name: office
+  m_Name: BusEneterTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41251,8 +41264,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.64, z: 0}
   m_LocalScale: {x: 4.827255, y: 2.140878, z: 4.827255}
   m_Children: []
-  m_Father: {fileID: 1350697056}
-  m_RootOrder: 1
+  m_Father: {fileID: 2130806155}
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2108056742
 MonoBehaviour:
@@ -41680,6 +41693,7 @@ Transform:
   - {fileID: 1672687253}
   - {fileID: 5243631671867303736}
   - {fileID: 2057833077}
+  - {fileID: 2108056741}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
