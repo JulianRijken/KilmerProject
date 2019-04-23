@@ -19,11 +19,6 @@ public class GameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameTimeLeftText = null;
     [SerializeField] private TextMeshProUGUI countdownText = null;
 
-    [SerializeField] private TextMeshProUGUI winScreenText = null;
-    [SerializeField] CanvasGroup winScreenCanvasGroup = null;
-    [SerializeField] GameObject winScreenGroup = null;
-    [SerializeField] private float cheatTimeMakeZero;
-
     [SerializeField] private Color overtimeColor = Color.red;
 
     private int[] playersScores = new int[4];
@@ -40,7 +35,14 @@ public class GameUI : MonoBehaviour
     [SerializeField] private AudioSource counterBeep = new AudioSource();
     [SerializeField] private GameObject addPointSound = null;
     [SerializeField] private GameObject tikSound = null;
+
     private bool lastTimeSound = false;
+
+
+    [Header("WinScreen")]
+    [SerializeField] private TextMeshProUGUI[] winScreenScoresText = null;
+    [SerializeField] private RectTransform[] winScreenTransforms = null;
+    [SerializeField] CanvasGroup winScreenCanvasGroup = null;
 
     private void Awake()
     {
@@ -49,6 +51,7 @@ public class GameUI : MonoBehaviour
 
     private void Start()
     {
+
         lastTimeSound = false;
 
         fromLightRot = lightTransform.eulerAngles;
@@ -63,9 +66,7 @@ public class GameUI : MonoBehaviour
         }
 
         winScreenCanvasGroup.alpha = 0;
-        winScreenGroup.SetActive(false);
-
-        cheatTimeMakeZero = 0;
+        winScreenCanvasGroup.gameObject.SetActive(false);
     }
 
     public void Update()
@@ -195,13 +196,22 @@ public class GameUI : MonoBehaviour
             return false;
     }
 
+
+
+
+
+
+
+
+
+
     /// <summary>
     /// Shows the win screen
     /// </summary>
     IEnumerator WinScreen()
     {
         gameManager.SetGameState(GameState.winScreen);
-        winScreenGroup.SetActive(true);
+        winScreenCanvasGroup.gameObject.SetActive(true);
         Time.timeScale = 0;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -210,34 +220,29 @@ public class GameUI : MonoBehaviour
         camaraAnimatior.SetTrigger("WinScreen");
 
 
-        int bestPlayer = 0;
+        //for (int x = 0; x > playersScores.Length; x++)
+        //{
+        //    for (int i = playersScores.Length - 1; i >= 0; i--)
+        //    {
+
+        //            if (playersScores[x] > playersScores[i])
+        //                SwitchPlace(x, i);
+               
+        //    }
+
+        //}
+
+
+
+
+
+        // Set the score text
         for (int i = 0; i < playersScores.Length; i++)
         {
-            if (playersScores[i] > playersScores[bestPlayer])
-            {
-                bestPlayer = i;
-            }
+            winScreenScoresText[i].text = playersScores[i].ToString();
         }
 
-        switch (bestPlayer)
-        {
-            case 0:
-                winScreenText.text = "Yellow Wins!";
 
-                break;
-            case 1:
-                winScreenText.text = "Red Wins!";
-
-                break;
-            case 2:
-                winScreenText.text = "Blue Wins!";
-
-                break;
-            case 3:
-                winScreenText.text = "Purple Wins!";
-
-                break;
-        }
 
         while (inGameUIGroup.alpha > 0)
         {
@@ -253,6 +258,30 @@ public class GameUI : MonoBehaviour
 
     }
 
+
+
+    private void SwitchPlace(int one, int two)
+    {
+
+        Vector3 posOne = winScreenScoresText[one].rectTransform.parent.transform.position;
+        Vector3 posTwo = winScreenScoresText[two].rectTransform.parent.transform.position;
+
+        winScreenScoresText[one].rectTransform.parent.transform.position = posTwo;
+        winScreenScoresText[two].rectTransform.parent.transform.position = posOne;
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
     /// <summary>
     /// Sets up all the game Ui
     /// </summary>
@@ -261,7 +290,7 @@ public class GameUI : MonoBehaviour
         StartCountdown(_countdownTime);
 
         playerCount = _playerCount;
-        gameTimeLeft = _gameTime - cheatTimeMakeZero;
+        gameTimeLeft = _gameTime;
         gameStartTime = gameTimeLeft;
 
         for (int i = 0; i < playerCount; i++)
