@@ -7,7 +7,11 @@ using UnityEngine.SceneManagement;
 
 public class GameUI : MonoBehaviour
 {
+    [HideInInspector] public static GameUI instance;
+
+
     [SerializeField] private Animator camaraAnimatior = null;
+    [SerializeField] private Animator stationArrowInfo = null;
     [SerializeField] GameManager gameManager = null;
     [SerializeField] GameObject inGameMenu = null;
     [SerializeField] CanvasGroup inGameUIGroup = null;
@@ -38,6 +42,10 @@ public class GameUI : MonoBehaviour
     [SerializeField] private GameObject tikSound = null;
     private bool lastTimeSound = false;
 
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
@@ -398,4 +406,9 @@ public class GameUI : MonoBehaviour
         Destroy(countdownText.gameObject);
     }
 
+
+    public void ShowStationArrowInfo()
+    {
+        stationArrowInfo.SetBool("Done",true);
+    }
 }

@@ -31,10 +31,6 @@ public class PassengerSpawner : MonoBehaviour
                     int randomSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
                     SpawnPassenger(randomSpawnPoint);
                 }
-                else
-                {
-                    Debug.Log("No Spawns");
-                }
 
             }
             

@@ -23,6 +23,7 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
+    [HideInInspector] public static GameManager instance;
 
     [SerializeField] private VehiclePrefabs vehiclePrefabs = null;
     [SerializeField] private MainMenu mainMenu = null;
@@ -37,6 +38,10 @@ public class GameManager : MonoBehaviour
 
     private List<GameObject> inGameVehicles = new List<GameObject>();
 
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {

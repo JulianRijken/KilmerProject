@@ -101,6 +101,7 @@ public class Train : MonoBehaviour
         wagon.distance = totalWagonDistance;
         wagons.Add(wagon);
         MoveWagons();
+        GameUI.instance.ShowStationArrowInfo();
 
         if(settings.global.WagonAddEffect != null)
             Instantiate(settings.global.WagonAddEffect, wagon.transform.position + (wagon.transform.up * 0.5f), Quaternion.Euler(Vector3.up), wagon.transform  );

@@ -6,41 +6,41 @@ using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
+    [Header("HomeSign")]
+    [SerializeField] private CanvasGroup creditsGroup = null;
 
-    [SerializeField] private Animator camaraAnimatior = null;
-    [SerializeField] private GameManager gameManager = null;
-    [SerializeField] private GameUI gameUI = null;
-
+    [Header("SettingsBoard")]
     [SerializeField] private Slider playerSlider = null;
     [SerializeField] private Slider timeSlider = null;
     [SerializeField] private Slider volumeSlider = null;
-
     [SerializeField] private TextMeshProUGUI playerText = null;
     [SerializeField] private TextMeshProUGUI timeText = null;
     [SerializeField] private TextMeshProUGUI volumeText = null;
-
     [SerializeField] private Transform clockGroteTransform = null;
     [SerializeField] private Transform clockKlijneTransform = null;
-    [SerializeField] private float clockSpeed = 5000;
-
-    [SerializeField] private List<Sprite> volumeSprites = new List<Sprite>();
     [SerializeField] private Image volumeRender = null;
-
+    [SerializeField] private float clockSpeed = 5000;
+    [SerializeField] private List<Sprite> volumeSprites = new List<Sprite>();
     [SerializeField] private List<Image> playerSprites = new List<Image>();
 
+    [Header("Extra")]
+    [SerializeField] private Animator camaraAnimatior = null;
     [SerializeField] private int countdownTime = 6;
+    [SerializeField] private GameObject[] hideInMenu;
 
-    [SerializeField] private GameObject inGameObjects;
+
 
 
     private void Start()
     {
 
-        inGameObjects.SetActive(false);
+        for (int i = 0; i < hideInMenu.Length; i++) { hideInMenu[i].SetActive(false); }
+
         playerSlider.value = PlayerPrefs.GetInt("playerCount");
         timeSlider.value = PlayerPrefs.GetInt("gameTime");
         volumeSlider.value = PlayerPrefs.GetInt("gameVolume");
-
+        creditsGroup.alpha = 0;
+        creditsGroup.gameObject.SetActive(false);
         AudioListener.volume = (volumeSlider.value / 100f);
     }
 
@@ -129,7 +129,7 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
-        if (gameManager.GetGameState().Equals(GameState.Menu))       
+        if (GameManager.instance.GetGameState().Equals(GameState.Menu))       
             StartCoroutine(IStartGame());      
     }
     private IEnumerator IStartGame()
@@ -138,9 +138,9 @@ public class MainMenu : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         yield return new WaitForSeconds(1);
-        inGameObjects.SetActive(true);
-        gameUI.StartGameUI(PlayerPrefs.GetInt("playerCount"), (PlayerPrefs.GetInt("gameTime") * 30) + (5 * 60),countdownTime);
-        gameManager.StartGame(PlayerPrefs.GetInt("playerCount"),countdownTime);
+        for (int i = 0; i < hideInMenu.Length; i++) { hideInMenu[i].SetActive(true);}
+        GameUI.instance.StartGameUI(PlayerPrefs.GetInt("playerCount"), (PlayerPrefs.GetInt("gameTime") * 30) + (5 * 60),countdownTime);
+        GameManager.instance.StartGame(PlayerPrefs.GetInt("playerCount"),countdownTime);
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void SaveButton()
     {
-        if (gameManager.GetGameState().Equals(GameState.Menu))
+        if (GameManager.instance.GetGameState().Equals(GameState.Menu))
             camaraAnimatior.SetTrigger("HomeMenu");
 
         PlayerPrefs.SetInt("playerCount", (int)playerSlider.value);
@@ -163,7 +163,7 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void SettingsButton()
     {
-        if(gameManager.GetGameState().Equals(GameState.Menu))
+        if(GameManager.instance.GetGameState().Equals(GameState.Menu))
             camaraAnimatior.SetTrigger("Settings");
     }
 
@@ -171,9 +171,12 @@ public class MainMenu : MonoBehaviour
     /// <summary>
     /// Opens the credits screen
     /// </summary>
-    public void CreditsButton()
+    public void CreditsButton(bool open)
     {
-
+        if (open)
+            StartCoroutine(IOpenCredits());
+        else
+            StartCoroutine(ICloseCredits());
     }
 
     /// <summary>
@@ -182,5 +185,35 @@ public class MainMenu : MonoBehaviour
     public void QuitButton()
     {
         Application.Quit();
+    }
+
+
+    public IEnumerator IOpenCredits()
+    {
+        creditsGroup.gameObject.SetActive(true);
+
+        if (creditsGroup.alpha != 0)
+            yield break;
+
+        while (creditsGroup.alpha < 1)
+        {
+            creditsGroup.alpha += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    IEnumerator ICloseCredits()
+    {
+        if (creditsGroup.alpha != 1)
+            yield break;
+
+        while (creditsGroup.alpha > 0)
+        {
+            creditsGroup.alpha -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        creditsGroup.gameObject.SetActive(false);
+
     }
 }
