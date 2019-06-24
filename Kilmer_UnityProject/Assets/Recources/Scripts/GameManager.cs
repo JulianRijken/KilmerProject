@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private VehiclePrefabs vehiclePrefabs = null;
     [SerializeField] private MainMenu mainMenu = null;
     [SerializeField] private Transform[] camRemoveStart = null;
-    [SerializeField] private GameUI gameUI = null;
     [SerializeField] private Animator busMiddleInfoAnimator = null;
 
     private List<HomeStation> homeStations = new List<HomeStation>();

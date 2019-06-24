@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Billboard : MonoBehaviour
 {
-    [SerializeField] private bool OnlyYAxis;
+    [SerializeField] private bool OnlyYAxis = false;
     private Camera camara;
 
     private void Awake()

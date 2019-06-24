@@ -26,7 +26,7 @@ public class MainMenu : MonoBehaviour
     [Header("Extra")]
     [SerializeField] private Animator camaraAnimatior = null;
     [SerializeField] private int countdownTime = 6;
-    [SerializeField] private GameObject[] hideInMenu;
+    [SerializeField] private GameObject[] hideInMenu = null;
 
 
 

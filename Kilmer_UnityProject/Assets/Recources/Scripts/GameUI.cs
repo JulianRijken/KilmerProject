@@ -41,7 +41,6 @@ public class GameUI : MonoBehaviour
 
     [Header("WinScreen")]
     [SerializeField] private TextMeshProUGUI[] winScreenScoresText = null;
-    [SerializeField] private RectTransform[] winScreenTransforms = null;
     [SerializeField] CanvasGroup winScreenCanvasGroup = null;
 
     private void Awake()

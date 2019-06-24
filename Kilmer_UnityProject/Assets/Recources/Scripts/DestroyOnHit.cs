@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DestroyOnHit : MonoBehaviour
 {
-    [SerializeField] private int[] mask;
-    [SerializeField] private GameObject destroyedObject;
+    [SerializeField] private int[] mask = null;
+    [SerializeField] private GameObject destroyedObject = null;
 
 
     private void OnCollisionEnter(Collision collision)
