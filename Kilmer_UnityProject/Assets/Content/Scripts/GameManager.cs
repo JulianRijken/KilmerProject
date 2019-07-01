@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 
 public enum PlayerId
@@ -44,6 +45,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        
+
         cinemachineTargetGroup = FindObjectOfType<CinemachineTargetGroup>();
         SetGameState(GameState.Menu);
         Time.timeScale = 1;
