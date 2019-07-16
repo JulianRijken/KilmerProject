@@ -279,6 +279,17 @@ public class GameInput : IInputActionCollection
                     ""processors"": """",
                     ""interactions"": """",
                     ""bindings"": []
+                },
+                {
+                    ""name"": ""Horn"",
+                    ""id"": ""0c2f8232-35d4-4c9e-bb99-243b4ab8b76e"",
+                    ""expectedControlLayout"": """",
+                    ""continuous"": false,
+                    ""passThrough"": false,
+                    ""initialStateCheck"": false,
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""bindings"": []
                 }
             ],
             ""bindings"": [
@@ -365,6 +376,78 @@ public class GameInput : IInputActionCollection
                     ""isComposite"": false,
                     ""isPartOfComposite"": true,
                     ""modifiers"": """"
+                },
+                {
+                    ""name"": ""Keyboard Input"",
+                    ""id"": ""3509b98e-f25d-4180-82ca-682339d12714"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GasAxis"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false,
+                    ""modifiers"": """"
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""312ba965-a2cd-4227-a8b1-b2d08123e2af"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GasAxis"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true,
+                    ""modifiers"": """"
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""4944c8d6-b96e-4a69-ab67-a279e086b9a8"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GasAxis"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true,
+                    ""modifiers"": """"
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d685823f-5c21-4079-8401-7e964be436e1"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Horn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false,
+                    ""modifiers"": """"
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a77a9926-edd1-4da8-8505-c293b2726dc4"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Horn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false,
+                    ""modifiers"": """"
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""35e38ef3-0f51-4464-a804-72530eacfc2d"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Horn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false,
+                    ""modifiers"": """"
                 }
             ]
         }
@@ -386,6 +469,7 @@ public class GameInput : IInputActionCollection
         m_Player = asset.GetActionMap("Player");
         m_Player_SteerAxis = m_Player.GetAction("SteerAxis");
         m_Player_GasAxis = m_Player.GetAction("GasAxis");
+        m_Player_Horn = m_Player.GetAction("Horn");
     }
 
     ~GameInput()
@@ -544,12 +628,14 @@ public class GameInput : IInputActionCollection
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private InputAction m_Player_SteerAxis;
     private InputAction m_Player_GasAxis;
+    private InputAction m_Player_Horn;
     public struct PlayerActions
     {
         private GameInput m_Wrapper;
         public PlayerActions(GameInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @SteerAxis { get { return m_Wrapper.m_Player_SteerAxis; } }
         public InputAction @GasAxis { get { return m_Wrapper.m_Player_GasAxis; } }
+        public InputAction @Horn { get { return m_Wrapper.m_Player_Horn; } }
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -566,6 +652,9 @@ public class GameInput : IInputActionCollection
                 GasAxis.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGasAxis;
                 GasAxis.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGasAxis;
                 GasAxis.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGasAxis;
+                Horn.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHorn;
+                Horn.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHorn;
+                Horn.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHorn;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -576,6 +665,9 @@ public class GameInput : IInputActionCollection
                 GasAxis.started += instance.OnGasAxis;
                 GasAxis.performed += instance.OnGasAxis;
                 GasAxis.canceled += instance.OnGasAxis;
+                Horn.started += instance.OnHorn;
+                Horn.performed += instance.OnHorn;
+                Horn.canceled += instance.OnHorn;
             }
         }
     }
@@ -602,5 +694,6 @@ public class GameInput : IInputActionCollection
     {
         void OnSteerAxis(InputAction.CallbackContext context);
         void OnGasAxis(InputAction.CallbackContext context);
+        void OnHorn(InputAction.CallbackContext context);
     }
 }

@@ -37,6 +37,8 @@ public class Bus : MonoBehaviour
         controls.Player.GasAxis.performed += context => gasAxis = context.ReadValue<float>();
         controls.Player.GasAxis.canceled += context => gasAxis = 0;
 
+        controls.Player.Horn.performed += HandleHorn;
+
         infoGroup.alpha = 0;
     }
 
@@ -186,6 +188,10 @@ public class Bus : MonoBehaviour
     }
 
 
+    private void HandleHorn(InputAction.CallbackContext context)
+    {
+        hornSound.Play();
+    }
 
 
     private void KillBus()
