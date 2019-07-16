@@ -1,17 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Bus : MonoBehaviour
 {   
-    public BusSettings settings;
+    [SerializeField] private BusSettings settings;
+    [SerializeField] private CanvasGroup infoGroup = null;
+    [SerializeField] private AudioSource engineSound = null;
+    [SerializeField] private AudioSource hornSound = null;
+
     private GameManager gameManager;
     private Rigidbody rig;
     private WheelCollider[] wheels;
     private Animator animator;
-    [SerializeField] private CanvasGroup infoGroup = null;
-    [SerializeField] private AudioSource engineSound = null;
-    [SerializeField] private AudioSource hornSound = null;
 
     private int points;
 
@@ -20,12 +22,25 @@ public class Bus : MonoBehaviour
 
     private float lifeTime;
 
+    private GameInput controls;
+    private float steerAxis;
+    private float gasAxis;
+
+
     private void Awake()
     {
+        controls = new GameInput();
+
+        controls.Player.SteerAxis.performed += context => steerAxis = context.ReadValue<float>();
+        controls.Player.SteerAxis.canceled += context => steerAxis = 0;
+
+        controls.Player.GasAxis.performed += context => gasAxis = context.ReadValue<float>();
+        controls.Player.GasAxis.canceled += context => gasAxis = 0;
+
         infoGroup.alpha = 0;
     }
 
-    void Start()
+    private void Start()
     {
         rig = GetComponent<Rigidbody>();
         wheels = GetComponentsInChildren<WheelCollider>();
@@ -39,7 +54,7 @@ public class Bus : MonoBehaviour
         hornSound.PlayDelayed(0.6f);
     }
 
-    void Update()
+    private void Update()
     {
         lifeTime += Time.deltaTime;
 
@@ -52,7 +67,7 @@ public class Bus : MonoBehaviour
         }
 
         if(keyPressed == false)
-            if (GetKeyInput().y != 0f)
+            if (gasAxis != 0f)
             {
                 animator.SetBool("Key", true);
                 keyPressed = true;
@@ -61,6 +76,35 @@ public class Bus : MonoBehaviour
         engineSound.pitch = (rig.velocity.magnitude / settings.maxVelocity) + 1;
 
     }
+
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == 11)
+        {
+            KillBus();
+        }
+    }
+
+    private void OnTriggerExit(Collider collision)
+    {
+        if (spawning == true)
+        {
+            EindSpawn();
+            rig.velocity = transform.forward * 10;
+        }
+    }
+
+
 
     public float GetLifeTime()
     {
@@ -77,14 +121,19 @@ public class Bus : MonoBehaviour
         return points;
     }
 
+    public BusSettings GetSettings()
+    {
+        return settings;
+    }
+
     public void SetPoints(int c_points)
     {
         points = c_points;
     }
 
 
-    // Rotates te wheels
-    void Move()
+
+    private void Move()
     {
 
         // Move weels
@@ -92,7 +141,7 @@ public class Bus : MonoBehaviour
         {
             if (wheels[i].transform.localPosition.z > 0)
             {
-                wheels[i].steerAngle = GetKeyInput().x * settings.rotateAngle;
+                wheels[i].steerAngle = steerAxis * settings.rotateAngle;
             }
             else if (wheels[i].transform.localPosition.z < 0)
             {
@@ -105,7 +154,7 @@ public class Bus : MonoBehaviour
                 else
                 {
                     wheels[i].brakeTorque = 0;
-                    wheels[i].motorTorque = wheels[i].steerAngle = GetKeyInput().y * settings.moveSpeed;
+                    wheels[i].motorTorque = wheels[i].steerAngle = gasAxis * settings.moveSpeed;
 
                 }
 
@@ -124,53 +173,19 @@ public class Bus : MonoBehaviour
     }
 
 
-    // Get the key input
-    Vector2 GetKeyInput()
-    {
-        Vector2 inputVector = new Vector2(0,0);
-
-        if (Input.GetKey(settings.leftKey))
-            inputVector.x -= 1;
-        if (Input.GetKey(settings.rightKey))
-            inputVector.x += 1;
-
-        if (Input.GetKey(settings.upKey))
-            inputVector.y += 1;
-        if (Input.GetKey(settings.downKey))
-            inputVector.y -= 1;
-
-        return inputVector;
-    }
-
-
-    // Make bus move out of the HomeStation
-    void Spawn()
+    private void Spawn()
     {
         transform.position += transform.forward * Time.deltaTime * 10;
     }
 
-    void EindSpawn()
+    private void EindSpawn()
     {
         spawning = false;
         rig.constraints = RigidbodyConstraints.None;
         rig.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer == 11)
-        {
-            KillBus();
-        }
-    }
-    private void OnTriggerExit(Collider collision)
-    {
-        if (spawning == true)
-        {
-            EindSpawn();
-            rig.velocity = transform.forward * 10;
-        }
-    }
+
 
 
     private void KillBus()

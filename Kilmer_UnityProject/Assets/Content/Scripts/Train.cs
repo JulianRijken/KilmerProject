@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Train : MonoBehaviour
 {
 
-    public TrainSettings settings;
+    [SerializeField] private TrainSettings settings;
 
     private GameManager gameManager;
     private Rigidbody rig;
@@ -13,14 +14,25 @@ public class Train : MonoBehaviour
     private bool inHomeStation = false;
     private bool spawning = true;
 
-    [HideInInspector] public List<Wagon> wagons = new List<Wagon>();
+    private List<Wagon> wagons = new List<Wagon>();
     private List<BufferTransform> bufferTransforms = new List<BufferTransform>();
     private int totalWagonDistance;
 
     private float lifeTime;
     private bool gettingRemoved;
 
-    void Start()
+    private GameInput controls;
+    private float steerAxis;
+
+    private void Awake()
+    {
+        controls = new GameInput();
+
+        controls.Player.SteerAxis.performed += context => steerAxis = context.ReadValue<float>();
+        controls.Player.SteerAxis.canceled += context => steerAxis = 0;
+    }
+
+    private void Start()
     {
         rig = GetComponent<Rigidbody>();
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -35,8 +47,7 @@ public class Train : MonoBehaviour
 
     }
 
-
-    void Update()
+    private void Update()
     {
         lifeTime += Time.deltaTime;
 
@@ -50,9 +61,71 @@ public class Train : MonoBehaviour
         }
 
         MoveWagons();
-
     }
 
+    private void FixedUpdate()
+    {
+        Move();
+        HandleBufferList();
+    }
+
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
+    }
+
+
+    #region Collision
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (spawning == false && inHomeStation == false)
+        {
+            HomeStation station = collision.GetComponent<HomeStation>();
+
+            if (station != null && inHomeStation == false)
+                if (wagons.Count == 0)
+                {
+                    OnHitObstacal();
+                }
+                else
+                {
+                    EnterStation(station);
+                }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+
+        if (spawning == false && inHomeStation == false)
+        {
+            if (collision.gameObject.layer == 12 || collision.gameObject.layer == 11)
+            {
+                OnHitObstacal();
+            }
+
+        }
+    }
+
+    private void OnTriggerExit(Collider collision)
+    {
+        if (spawning == true)
+        {
+            spawning = false;
+            gameObject.layer = 11;
+        }
+    }
+
+    #endregion
+
+
+    #region GetFunctions
     public float GetLifeTime()
     {
         return lifeTime;
@@ -63,9 +136,19 @@ public class Train : MonoBehaviour
         return spawning;
     }
 
-    private void AddToBufferList()
+    public List<Wagon> GetWagons()
     {
+        return wagons;
+    }
 
+    #endregion
+
+
+    /// <summary>
+    /// Handles The buffer list for the wagons
+    /// </summary>
+    private void HandleBufferList()
+    {
         if (gettingRemoved == false)
         {
             while (bufferTransforms.Count <= settings.global.bufferSize)
@@ -80,20 +163,9 @@ public class Train : MonoBehaviour
         }
     }
 
-    private void MoveWagons()
-    {
-        int globalBufferSize = settings.global.bufferSize;
-
-        for (int i = 0; i < wagons.Count; i++)
-        {
-            if (wagons[i] != null)
-            {
-                wagons[i].transform.position = bufferTransforms[globalBufferSize - wagons[i].distance].position;
-                wagons[i].transform.rotation = bufferTransforms[globalBufferSize - wagons[i].distance].rotation;
-            }
-        }
-    }
-
+    /// <summary>
+    /// Adds a wagon to the train
+    /// </summary>
     public void AddWagon()
     {
         Wagon wagon = Instantiate(settings.wagonPrefab).GetComponent<Wagon>();
@@ -108,34 +180,48 @@ public class Train : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Moves the train wagons
+    /// </summary>
+    private void MoveWagons()
+    {
+        int globalBufferSize = settings.global.bufferSize;
 
-    private void FixedUpdate()
-    {      
-        Move();
-
-        AddToBufferList();
+        for (int i = 0; i < wagons.Count; i++)
+        {
+            if (wagons[i] != null)
+            {
+                wagons[i].transform.position = bufferTransforms[globalBufferSize - wagons[i].distance].position;
+                wagons[i].transform.rotation = bufferTransforms[globalBufferSize - wagons[i].distance].rotation;
+            }
+        }
     }
 
-
-    void Rotate()
+    /// <summary>
+    /// Rotates The train
+    /// </summary>
+    private void Rotate()
     {
         if (gettingRemoved == false)
         {
             if (gameManager.GetGameState().Equals(GameState.Playing))
             {
-                // Curve
 
-                float zRot = GetKeyInput() * settings.global.curveMultiple;
+                // Curve
+                float zRot = steerAxis * settings.global.curveMultiple;
                 Quaternion toRot = Quaternion.Euler(new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRot));
                 transform.GetChild(0).transform.rotation = Quaternion.Slerp(transform.GetChild(0).transform.rotation, toRot, Time.deltaTime / settings.global.curveRecoverTime);
 
                 // Rotate y
-                transform.Rotate(0, GetKeyInput() * settings.global.rotationSpeed * Time.deltaTime * 100, 0);
+                transform.Rotate(0, steerAxis * settings.global.rotationSpeed * Time.deltaTime * 100, 0);
             }
         }
     }
 
-    void Move()
+    /// <summary>
+    /// Moves The train
+    /// </summary>
+    private void Move()
     {
         // Always move player forward
         if (spawning == false)
@@ -147,7 +233,7 @@ public class Train : MonoBehaviour
     /// <summary>
     /// Destroys the player and the carts
     /// </summary>
-    void OnHitObstacal()
+    private void OnHitObstacal()
     {
         if(gettingRemoved == false)
             StartCoroutine(KillTrain());
@@ -157,7 +243,7 @@ public class Train : MonoBehaviour
     /// <summary>
     /// Removes The Train
     /// </summary>
-    IEnumerator KillTrain()
+    private IEnumerator KillTrain()
     {
         gettingRemoved = true;
 
@@ -196,7 +282,7 @@ public class Train : MonoBehaviour
     /// <summary>
     /// Makes a new train spawn and makes the current train slowly die
     /// </summary>
-    void EnterStation(HomeStation station)
+    private void EnterStation(HomeStation station)
     {
         if (spawning == false)
         {
@@ -214,71 +300,6 @@ public class Train : MonoBehaviour
 
         }
     }
-
-    /// <summary>
-    /// Lets the train collide and die
-    /// </summary>
-    private void OnCollisionEnter(Collision collision)
-    {
-
-        if (spawning == false && inHomeStation == false)
-        {
-            if (collision.gameObject.layer == 12 || collision.gameObject.layer == 11)
-            { 
-                OnHitObstacal();
-            }
-
-        }
-    }
-
-    /// <summary>
-    /// Lets the train enter the station and hit the station wall
-    /// </summary>
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (spawning == false && inHomeStation == false)
-        {
-            HomeStation station = collision.GetComponent<HomeStation>();
-
-            if (station != null && inHomeStation == false)
-                if (wagons.Count == 0)
-                {
-                    OnHitObstacal();
-                }
-                else
-                {
-                    EnterStation(station);
-                }
-        }
-    }
-
-    /// <summary>
-    /// Exits Spawn State
-    /// </summary>
-    private void OnTriggerExit(Collider collision)
-    {
-        if (spawning == true)
-        {
-            spawning = false;
-            gameObject.layer = 11;
-        }
-    }
-
-    /// <summary>
-    /// Returns the keyboard Input as int
-    /// </summary>
-    int GetKeyInput()
-    {
-        int keyInput = 0;
-
-        if (Input.GetKey(settings.leftKey))
-            keyInput -= 1;
-        if (Input.GetKey(settings.rightKey))
-            keyInput += 1;
-
-        return keyInput;
-    }
-
 
 }
 

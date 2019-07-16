@@ -70,15 +70,14 @@ public class HomeStation : MonoBehaviour
                 if (train != null)
                     if(train.GetSpawning() == false)
                         if(train.GetLifeTime() >= 2.5f)
-                            if(train.wagons.Count == 0)
+                            if(train.GetWagons().Count == 0)
                                 return true;
 
                 if (bus != null)
                     if (bus.GetSpawning() == false)
                         if (bus.GetLifeTime() >= 2.5f)              
                                 return true;
-
-
+ 
             }
         }
 

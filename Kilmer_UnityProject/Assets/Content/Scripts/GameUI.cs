@@ -4,16 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class GameUI : MonoBehaviour
 {
-    [HideInInspector] public static GameUI instance;
 
+    [HideInInspector] public static GameUI instance;
 
     [SerializeField] private Animator camaraAnimatior = null;
     [SerializeField] private Animator stationArrowInfo = null;
     [SerializeField] GameManager gameManager = null;
     [SerializeField] GameObject inGameMenu = null;
+    [SerializeField] Button inGameMenuSelectButton = null;
     [SerializeField] CanvasGroup inGameUIGroup = null;
     [SerializeField] private TextMeshProUGUI[] playersScoreText = null;
     [SerializeField] private TextMeshProUGUI gameTimeLeftText = null;
@@ -43,9 +45,16 @@ public class GameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI[] winScreenScoresText = null;
     [SerializeField] CanvasGroup winScreenCanvasGroup = null;
 
+
+    private GameInput controls;
+
+
     private void Awake()
     {
         instance = this;
+        controls = new GameInput();
+
+        controls.UI.Pause.performed += OpenPauseMenu;
     }
 
     private void Start()
@@ -74,6 +83,17 @@ public class GameUI : MonoBehaviour
         UpdateUI();
         UpdateLight();
     }
+
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
+    }
+
 
     /// <summary>
     /// Rotates the diractional light
@@ -196,14 +216,6 @@ public class GameUI : MonoBehaviour
     }
 
 
-
-
-
-
-
-
-
-
     /// <summary>
     /// Shows the win screen
     /// </summary>
@@ -257,8 +269,6 @@ public class GameUI : MonoBehaviour
 
     }
 
-
-
     private void SwitchPlace(int one, int two)
     {
 
@@ -270,13 +280,6 @@ public class GameUI : MonoBehaviour
 
 
     }
-
-
-
-
-
-
-
 
 
 
@@ -345,17 +348,6 @@ public class GameUI : MonoBehaviour
 
         if (gameManager.GetGameState().Equals(GameState.Playing) || gameManager.GetGameState().Equals(GameState.pause))
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                if (gameManager.GetGameState().Equals(GameState.pause))
-                {
-                    Resume();
-                }
-                else if (gameManager.GetGameState().Equals(GameState.Playing))
-                {
-                    OpenPauseMenu();
-                }
-            }
 
             timeScaleTimer += Time.unscaledDeltaTime;
 
@@ -365,6 +357,25 @@ public class GameUI : MonoBehaviour
                 Time.timeScale = Mathf.Lerp(0, 1, timeScaleTimer * 0.75f);
         }
     }
+
+    private void OpenPauseMenu(InputAction.CallbackContext context)
+    {
+        if (gameManager.GetGameState().Equals(GameState.Playing) || gameManager.GetGameState().Equals(GameState.pause))
+        {
+
+            if (gameManager.GetGameState().Equals(GameState.pause))
+            {
+                Resume();
+            }
+            else if (gameManager.GetGameState().Equals(GameState.Playing))
+            {
+                OpenPauseMenu();
+            }
+
+        }
+    }
+
+
 
     /// <summary>
     /// Works the ui back to the menu and gives the rest to game manager
@@ -404,7 +415,7 @@ public class GameUI : MonoBehaviour
         timeScaleTimer = 0;
         AudioListener.pause = true;
         gameManager.SetGameState(GameState.pause);
-
+        inGameMenuSelectButton.Select();
     }
 
 

@@ -14,7 +14,7 @@ public class office : MonoBehaviour
         {
             Bus bus = collider.GetComponent<Bus>();
 
-            gameUi.AddPlayerScore(bus.GetPoints(), bus.settings.playerId);
+            gameUi.AddPlayerScore(bus.GetPoints(), bus.GetSettings().playerId);
 
             bus.EnterStation();
         }
