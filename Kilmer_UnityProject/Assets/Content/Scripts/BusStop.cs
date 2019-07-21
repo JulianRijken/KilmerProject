@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class office : MonoBehaviour
+public class BusStop : MonoBehaviour
 {
 
     public GameUI gameUi;
