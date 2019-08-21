@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
     [Header("HomeSign")]
-    [SerializeField] private CanvasGroup creditsGroup = null;
+    [SerializeField] private Animator creditsAnimatior = null;
 
     [Header("SettingsBoard")]
     [SerializeField] private Slider playerSlider = null;
@@ -39,8 +39,6 @@ public class MainMenu : MonoBehaviour
         playerSlider.value = PlayerPrefs.GetInt("playerCount");
         timeSlider.value = PlayerPrefs.GetInt("gameTime");
         volumeSlider.value = PlayerPrefs.GetInt("gameVolume");
-        creditsGroup.alpha = 0;
-        creditsGroup.gameObject.SetActive(false);
         AudioListener.volume = (volumeSlider.value / 100f);
     }
 
@@ -173,10 +171,7 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void CreditsButton(bool open)
     {
-        if (open)
-            StartCoroutine(IOpenCredits());
-        else
-            StartCoroutine(ICloseCredits());
+        creditsAnimatior.SetBool("Open", open);
     }
 
     /// <summary>
@@ -185,35 +180,5 @@ public class MainMenu : MonoBehaviour
     public void QuitButton()
     {
         Application.Quit();
-    }
-
-
-    public IEnumerator IOpenCredits()
-    {
-        creditsGroup.gameObject.SetActive(true);
-
-        if (creditsGroup.alpha != 0)
-            yield break;
-
-        while (creditsGroup.alpha < 1)
-        {
-            creditsGroup.alpha += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    IEnumerator ICloseCredits()
-    {
-        if (creditsGroup.alpha != 1)
-            yield break;
-
-        while (creditsGroup.alpha > 0)
-        {
-            creditsGroup.alpha -= Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-
-        creditsGroup.gameObject.SetActive(false);
-
     }
 }
