@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,21 +8,19 @@ public class Train : MonoBehaviour
 
     [SerializeField] private TrainSettings settings;
 
-    private GameManager gameManager;
+    private GameInput controls;
     private Rigidbody rig;
+    private GameManager gameManager;
+    private List<Wagon> wagons = new List<Wagon>();
+    private List<BufferTransform> bufferTransforms = new List<BufferTransform>();
 
     private bool inHomeStation = false;
     private bool spawning = true;
-
-    private List<Wagon> wagons = new List<Wagon>();
-    private List<BufferTransform> bufferTransforms = new List<BufferTransform>();
-    private int totalWagonDistance;
-
-    private float lifeTime;
-    private bool gettingRemoved;
-
-    private GameInput controls;
+    private bool gettingRemoved = false;
+    private int totalWagonDistance = -5;
+    private float lifeTime = 0;
     private float steerAxis;
+
 
     private void Awake()
     {
@@ -34,32 +32,21 @@ public class Train : MonoBehaviour
 
     private void Start()
     {
-        rig = GetComponent<Rigidbody>();
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-        spawning = true;
-        gettingRemoved = false;
 
-        //AddWagon(test);
-
+        rig = GetComponent<Rigidbody>();
         gameObject.layer = 15;
-        lifeTime = 0;
-        totalWagonDistance = -5;
-
     }
 
     private void Update()
     {
         lifeTime += Time.deltaTime;
 
-        if (spawning)
-        {
-            transform.position += transform.forward * Time.deltaTime * settings.global.moveSpeed;
-        }
-        else if(inHomeStation == false)
-        {
+        if (spawning)        
+            transform.position += transform.forward * Time.deltaTime * settings.global.moveSpeed;        
+        else if (inHomeStation == false)        
             Rotate();
-        }
-
+        
         MoveWagons();
     }
 
@@ -79,9 +66,6 @@ public class Train : MonoBehaviour
         controls.Disable();
     }
 
-
-    #region Collision
-
     private void OnTriggerEnter(Collider collision)
     {
         if (spawning == false && inHomeStation == false)
@@ -89,27 +73,21 @@ public class Train : MonoBehaviour
             HomeStation station = collision.GetComponent<HomeStation>();
 
             if (station != null && inHomeStation == false)
-                if (wagons.Count == 0)
-                {
-                    OnHitObstacal();
-                }
-                else
-                {
-                    EnterStation(station);
-                }
+            {
+                if (wagons.Count == 0)               
+                    OnHitObstacal();               
+                else            
+                    EnterStation(station);          
+            }
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-
         if (spawning == false && inHomeStation == false)
         {
-            if (collision.gameObject.layer == 12 || collision.gameObject.layer == 11)
-            {
-                OnHitObstacal();
-            }
-
+            if (collision.gameObject.layer == 12 || collision.gameObject.layer == 11)           
+                OnHitObstacal();           
         }
     }
 
@@ -121,27 +99,6 @@ public class Train : MonoBehaviour
             gameObject.layer = 11;
         }
     }
-
-    #endregion
-
-
-    #region GetFunctions
-    public float GetLifeTime()
-    {
-        return lifeTime;
-    }
-
-    public bool GetSpawning()
-    {
-        return spawning;
-    }
-
-    public List<Wagon> GetWagons()
-    {
-        return wagons;
-    }
-
-    #endregion
 
 
     /// <summary>
@@ -175,8 +132,8 @@ public class Train : MonoBehaviour
         MoveWagons();
         GameUI.instance.ShowStationArrowInfo();
 
-        if(settings.global.WagonAddEffect != null)
-            Instantiate(settings.global.WagonAddEffect, wagon.transform.position + (wagon.transform.up * 0.5f), Quaternion.Euler(Vector3.up), wagon.transform  );
+        if (settings.global.WagonAddEffect != null)
+            Instantiate(settings.global.WagonAddEffect, wagon.transform.position + (wagon.transform.up * 0.5f), Quaternion.Euler(Vector3.up), wagon.transform);
 
     }
 
@@ -206,7 +163,6 @@ public class Train : MonoBehaviour
         {
             if (gameManager.GetGameState().Equals(GameState.Playing))
             {
-
                 // Curve
                 float zRot = steerAxis * settings.global.curveMultiple;
                 Quaternion toRot = Quaternion.Euler(new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRot));
@@ -235,10 +191,32 @@ public class Train : MonoBehaviour
     /// </summary>
     private void OnHitObstacal()
     {
-        if(gettingRemoved == false)
+        if (gettingRemoved == false)
             StartCoroutine(KillTrain());
-
     }
+
+    /// <summary>
+    /// Makes a new train spawn and makes the current train slowly die
+    /// </summary>
+    private void EnterStation(HomeStation station)
+    {
+        if (spawning == false)
+        {
+            gameManager.RemoveCinemachineTargetGroupTarget(transform);
+            inHomeStation = true;
+            transform.rotation = Quaternion.Euler(0, station.InRotation.transform.eulerAngles.y, 0);
+            gameManager.SpawBus(settings.playerId, station, wagons.Count);
+
+            float timeToDestroy = ((wagons.Count * 0.25f) * (settings.global.moveSpeed / 10)) + 1;
+            for (int i = 0; i < wagons.Count; i++)
+            {
+                Destroy(wagons[i].gameObject, timeToDestroy);
+            }
+            Destroy(gameObject, timeToDestroy);
+
+        }
+    }
+
 
     /// <summary>
     /// Removes The Train
@@ -279,26 +257,29 @@ public class Train : MonoBehaviour
         Destroy(gameObject);
     }
 
+
     /// <summary>
-    /// Makes a new train spawn and makes the current train slowly die
+    /// Returns the LifeTime
     /// </summary>
-    private void EnterStation(HomeStation station)
+    public float GetLifeTime()
     {
-        if (spawning == false)
-        {
-            gameManager.RemoveCinemachineTargetGroupTarget(transform);
-            inHomeStation = true;
-            transform.rotation = Quaternion.Euler(0, station.InRotation.transform.eulerAngles.y, 0);
-            gameManager.SpawBus(settings.playerId, station, wagons.Count);
+        return lifeTime;
+    }
 
-            float timeToDestroy = ((wagons.Count * 0.25f) * (settings.global.moveSpeed / 10)) + 1;
-            for (int i = 0; i < wagons.Count; i++)
-            {
-                Destroy(wagons[i].gameObject, timeToDestroy);
-            }
-            Destroy(gameObject, timeToDestroy);
+    /// <summary>
+    /// Returns true if the train is currently spawning
+    /// </summary>
+    public bool GetSpawning()
+    {
+        return spawning;
+    }
 
-        }
+    /// <summary>
+    /// Returns a list of all the wagons
+    /// </summary>
+    public List<Wagon> GetWagons()
+    {
+        return wagons;
     }
 
 }
