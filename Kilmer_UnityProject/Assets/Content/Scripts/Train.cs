@@ -24,17 +24,22 @@ public class Train : MonoBehaviour
 
     private void Awake()
     {
+        // Subscribe the controls
         controls = new GameInput();
-
         controls.Player.SteerAxis.performed += context => steerAxis = context.ReadValue<float>();
         controls.Player.SteerAxis.canceled += context => steerAxis = 0;
     }
 
+    private void Awake()
+    {
+        rig = GetComponent<Rigidbody>();
+    }
+
     private void Start()
     {
+        // I'm looking at this from the future and today i would use a singleton for a gamemanager
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
-        rig = GetComponent<Rigidbody>();
         gameObject.layer = 15;
     }
 
@@ -42,17 +47,17 @@ public class Train : MonoBehaviour
     {
         lifeTime += Time.deltaTime;
 
-        if (spawning)        
-            transform.position += transform.forward * Time.deltaTime * settings.global.moveSpeed;        
-        else if (inHomeStation == false)        
-            Rotate();
-        
-        MoveWagons();
-    }
+        if (spawning)
+        {
+            // just move the train foarward while its spawning
+            transform.position += transform.forward * Time.deltaTime * settings.global.moveSpeed;
+            return;
+        }
 
-    private void FixedUpdate()
-    {
+        // Update the train
+        Rotate();     
         Move();
+        MoveWagons();
         HandleBufferList();
     }
 
@@ -68,32 +73,44 @@ public class Train : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (spawning == false && inHomeStation == false)
+        // Make sure the train is driving around
+        if (spawning == false && !inHomeStation)
         {
+            // Get the home station
             HomeStation station = collision.GetComponent<HomeStation>();
 
-            if (station != null && inHomeStation == false)
+            // Check if the trigger entered is a station
+            if (station != null)
             {
-                if (wagons.Count == 0)               
-                    OnHitObstacal();               
-                else            
-                    EnterStation(station);          
+                if (wagons.Count == 0)
+                {
+                    // If the train has no passangers desroy it
+                    OnHitObstacal();
+                }
+                else
+                {
+                    // Else enter the station
+                    EnterStation(station);
+                }
             }
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (spawning == false && inHomeStation == false)
+        // Make sure the train is driving around
+        if (!spawning && !inHomeStation)
         {
-            if (collision.gameObject.layer == 12 || collision.gameObject.layer == 11)           
-                OnHitObstacal();           
+            // Check if the collision is done on the right layer
+            if (collision.gameObject.layer == 12 || collision.gameObject.layer == 11)
+                OnHitObstacal();
         }
     }
 
     private void OnTriggerExit(Collider collision)
     {
-        if (spawning == true)
+        // If the train exits the spawn trigger and is still spawning set spawning false
+        if (spawning)
         {
             spawning = false;
             gameObject.layer = 11;
@@ -106,14 +123,17 @@ public class Train : MonoBehaviour
     /// </summary>
     private void HandleBufferList()
     {
-        if (gettingRemoved == false)
+        // Check if the train is not getting removed
+        if (!gettingRemoved)
         {
+            // Make sure the buffer stays full
             while (bufferTransforms.Count <= settings.global.bufferSize)
             {
                 bufferTransforms.Add(new BufferTransform(transform.position, transform.GetChild(0).rotation));
             }
         }
 
+        // Make sure the buffer stays the same size
         while (bufferTransforms.Count > settings.global.bufferSize)
         {
             bufferTransforms.RemoveAt(0);
@@ -125,13 +145,23 @@ public class Train : MonoBehaviour
     /// </summary>
     public void AddWagon()
     {
+        // Get the component
         Wagon wagon = Instantiate(settings.wagonPrefab).GetComponent<Wagon>();
+
+        // Calculate the distance
         totalWagonDistance = wagon.distance + totalWagonDistance;
         wagon.distance = totalWagonDistance;
+
+        // Add the wagon to the list of wagons
         wagons.Add(wagon);
+
+        // Update the position of all the wagons so it does stay a frame behind
         MoveWagons();
+
+        // Show the arrow tip
         GameUI.instance.ShowStationArrowInfo();
 
+        // Add a particle effect when spawning the wagon
         if (settings.global.WagonAddEffect != null)
             Instantiate(settings.global.WagonAddEffect, wagon.transform.position + (wagon.transform.up * 0.5f), Quaternion.Euler(Vector3.up), wagon.transform);
 
@@ -142,14 +172,13 @@ public class Train : MonoBehaviour
     /// </summary>
     private void MoveWagons()
     {
-        int globalBufferSize = settings.global.bufferSize;
-
+        // Move the wagons to the correct position
         for (int i = 0; i < wagons.Count; i++)
         {
             if (wagons[i] != null)
             {
-                wagons[i].transform.position = bufferTransforms[globalBufferSize - wagons[i].distance].position;
-                wagons[i].transform.rotation = bufferTransforms[globalBufferSize - wagons[i].distance].rotation;
+                wagons[i].transform.position = bufferTransforms[settings.global.bufferSize - wagons[i].distance].position;
+                wagons[i].transform.rotation = bufferTransforms[settings.global.bufferSize - wagons[i].distance].rotation;
             }
         }
     }
@@ -159,11 +188,11 @@ public class Train : MonoBehaviour
     /// </summary>
     private void Rotate()
     {
-        if (gettingRemoved == false)
+        if (!gettingRemoved && !inHomeStation)
         {
             if (gameManager.GetGameState().Equals(GameState.Playing))
             {
-                // Curve
+                // Makes the train curve to the sides when driving in a corner
                 float zRot = steerAxis * settings.global.curveMultiple;
                 Quaternion toRot = Quaternion.Euler(new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRot));
                 transform.GetChild(0).transform.rotation = Quaternion.Slerp(transform.GetChild(0).transform.rotation, toRot, Time.deltaTime / settings.global.curveRecoverTime);
@@ -179,11 +208,8 @@ public class Train : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        // Always move player forward
-        if (spawning == false)
-        {
-            rig.velocity = transform.forward * settings.global.moveSpeed;
-        }
+        // Updates the trains velocity and makes it move foarward
+        rig.velocity = transform.forward * settings.global.moveSpeed;      
     }
 
     /// <summary>
@@ -191,7 +217,7 @@ public class Train : MonoBehaviour
     /// </summary>
     private void OnHitObstacal()
     {
-        if (gettingRemoved == false)
+        if (!gettingRemoved)
             StartCoroutine(KillTrain());
     }
 
@@ -200,13 +226,18 @@ public class Train : MonoBehaviour
     /// </summary>
     private void EnterStation(HomeStation station)
     {
-        if (spawning == false)
+        if (!spawning)
         {
-            gameManager.RemoveCinemachineTargetGroupTarget(transform);
             inHomeStation = true;
+            gameManager.RemoveCinemachineTargetGroupTarget(transform);
+
+            // Makes sure the train drives in a straight line
             transform.rotation = Quaternion.Euler(0, station.InRotation.transform.eulerAngles.y, 0);
+
+            // Spawn the bus
             gameManager.SpawBus(settings.playerId, station, wagons.Count);
 
+            // Destroy the train
             float timeToDestroy = ((wagons.Count * 0.25f) * (settings.global.moveSpeed / 10)) + 1;
             for (int i = 0; i < wagons.Count; i++)
             {
@@ -225,14 +256,16 @@ public class Train : MonoBehaviour
     {
         gettingRemoved = true;
 
-        DeadVehicle go = Instantiate(settings.global.TrainDeathEffect, transform.position, transform.rotation).GetComponent<DeadVehicle>();
-        if (go != null)
-            go.SetVelocity(rig.velocity);
+        // Show a destroyed version of the train
+        DeadVehicle deadVehicle = Instantiate(settings.global.TrainDeathEffect, transform.position, transform.rotation).GetComponent<DeadVehicle>();
+
+        if (deadVehicle != null)
+            deadVehicle.SetVelocity(rig.velocity);
 
         GetComponent<BoxCollider>().enabled = false;
         Destroy(transform.GetChild(0).gameObject);
 
-
+        // Destroy all the wagons one by one
         for (int i = 0; i < wagons.Count; i++)
         {
             yield return new WaitForSeconds(0.03f);
@@ -252,6 +285,7 @@ public class Train : MonoBehaviour
 
         gameManager.RemoveCinemachineTargetGroupTarget(transform);
 
+        // Spawn a new train
         gameManager.SpawnTrain(settings.playerId, 5);
 
         Destroy(gameObject);
